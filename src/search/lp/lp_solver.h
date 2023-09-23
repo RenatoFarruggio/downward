@@ -120,6 +120,8 @@ public:
     bool is_infeasible() const;
     bool is_unbounded() const;
 
+    void set_use_presolve(const bool use_presolve);
+
     /*
       Return true if the solving the LP showed that it is bounded feasible and
       the discovered solution is guaranteed to be optimal. We test for

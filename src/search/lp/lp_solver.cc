@@ -211,6 +211,10 @@ bool LPSolver::is_unbounded() const {
     return pimpl->is_unbounded();
 }
 
+void LPSolver::set_use_presolve(const bool use_presolve) {
+    pimpl->set_use_presolve(use_presolve);
+}
+
 vector<double> LPSolver::extract_solution() const {
     return pimpl->extract_solution();
 }

@@ -37,6 +37,8 @@ public:
     virtual bool is_infeasible() const = 0;
     virtual bool is_unbounded() const = 0;
 
+    virtual void set_use_presolve(bool use_presolve) = 0;
+
     /*
       Return true if the solving the LP showed that it is bounded feasible and
       the discovered solution is guaranteed to be optimal. We test for

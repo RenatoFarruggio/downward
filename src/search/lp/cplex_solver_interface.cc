@@ -594,5 +594,15 @@ void CplexSolverInterface::print_statistics() const {
     utils::g_log << "LP constraints: " << get_num_constraints() << endl;
     utils::g_log << "LP non-zero entries: " << CPXgetnumnz(env, problem) << endl;
 }
+
+void CplexSolverInterface::set_use_presolve(bool use_presolve) {
+    CPXINT value = use_presolve? CPX_ON : CPX_OFF;
+    if (use_presolve) {
+        cout << "switching presolve on" << endl;
+    } else {
+        cout << "switching presolve off" << endl;
+    }
+    CPX_CALL(CPXsetintparam, env, CPXPARAM_Preprocessing_Presolve, value);
+}
 }
 #endif

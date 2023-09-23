@@ -62,6 +62,13 @@ void prepare_parser_for_admissible_potentials(plugins::Feature &feature) {
         "heuristics. For details, see the ICAPS paper cited above.",
         "1e8",
         plugins::Bounds("0.0", "infinity"));
+    
+    feature.add_option<bool>(
+    "use_presolve",
+    "turn presolving on or off. Using presolve creates an overhead "
+    "so turning presolve off might decrease runtime.",
+    "true");
+
     lp::add_lp_solver_option_to_feature(feature);
     Heuristic::add_options_to_feature(feature);
 }

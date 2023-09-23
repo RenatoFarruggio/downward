@@ -15,7 +15,8 @@ OperatorCountingHeuristic::OperatorCountingHeuristic(const plugins::Options &opt
       constraint_generators(
           opts.get_list<shared_ptr<ConstraintGenerator>>("constraint_generators")),
       lp_solver(opts.get<lp::LPSolverType>("lpsolver")),
-      use_integer_operator_counts(opts.get<bool>("use_integer_operator_counts")) {
+      use_integer_operator_counts(opts.get<bool>("use_integer_operator_counts")),
+      use_presolve(opts.get<bool>("use_presolve")) {
     lp_solver.set_mip_gap(0);
     named_vector::NamedVector<lp::LPVariable> variables;
     double infinity = lp_solver.get_infinity();
@@ -27,6 +28,7 @@ OperatorCountingHeuristic::OperatorCountingHeuristic(const plugins::Options &opt
     for (const auto &generator : constraint_generators) {
         generator->initialize_constraints(task, lp);
     }
+    lp_solver.set_use_presolve(use_presolve);
     lp_solver.load_problem(lp);
 }
 
@@ -90,6 +92,13 @@ public:
             "computationally expensive. Turning this option on can thus drastically "
             "increase the runtime.",
             "false");
+        
+        add_option<bool>(
+            "use_presolve",
+            "turn presolving on or off. Using presolve creates an overhead "
+            "so turning presolve off might decrease runtime.",
+            "true");
+
         lp::add_lp_solver_option_to_feature(*this);
         Heuristic::add_options_to_feature(*this);
 
