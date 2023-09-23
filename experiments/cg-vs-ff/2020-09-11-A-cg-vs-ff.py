@@ -8,18 +8,21 @@ import project
 
 REPO = project.get_repo_base()
 BENCHMARKS_DIR = os.environ["DOWNWARD_BENCHMARKS"]
-SCP_LOGIN = "myname@myserver.com"
-REMOTE_REPOS_DIR = "/infai/seipp/projects"
+SCP_LOGIN = "farren00@login-infai.scicore.unibas.ch"
+REMOTE_REPOS_DIR = "/infai/farren00/workspace"
 # If REVISION_CACHE is None, the default "./data/revision-cache/" is used.
 REVISION_CACHE = os.environ.get("DOWNWARD_REVISION_CACHE")
 if project.REMOTE:
+    print("Running on REMOTE.")
     SUITE = project.SUITE_SATISFICING
-    ENV = project.BaselSlurmEnvironment(email="my.name@myhost.ch")
+    ENV = project.BaselSlurmEnvironment(email="renato.farruggio@unibas.ch")
 else:
+    print("Running LOCALLY.")
     SUITE = ["depot:p01.pddl", "grid:prob01.pddl", "gripper:prob01.pddl"]
     ENV = project.LocalEnvironment(processes=2)
 
 CONFIGS = [
+#    ("config_with_presolve", ["--search", "astar(operatorcounting([state_equation_constraints()],use_presolve=true))"]),
     (f"{index:02d}-{h_nick}", ["--search", f"eager_greedy([{h}])"])
     for index, (h_nick, h) in enumerate(
         [
@@ -32,7 +35,7 @@ CONFIGS = [
 BUILD_OPTIONS = []
 DRIVER_OPTIONS = ["--overall-time-limit", "5m"]
 REV_NICKS = [
-    ("main", ""),
+    ("release-23.06.0", "23.06"),
 ]
 ATTRIBUTES = [
     "error",
