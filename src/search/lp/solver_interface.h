@@ -38,6 +38,7 @@ public:
     virtual bool is_unbounded() const = 0;
 
     virtual void set_use_presolve(bool use_presolve) = 0;
+    virtual void set_symmetry_breaking(int symmetry_breaking_level) = 0;
 
     /*
       Return true if the solving the LP showed that it is bounded feasible and

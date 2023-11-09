@@ -16,7 +16,8 @@ OperatorCountingHeuristic::OperatorCountingHeuristic(const plugins::Options &opt
           opts.get_list<shared_ptr<ConstraintGenerator>>("constraint_generators")),
       lp_solver(opts.get<lp::LPSolverType>("lpsolver")),
       use_integer_operator_counts(opts.get<bool>("use_integer_operator_counts")),
-      use_presolve(opts.get<bool>("use_presolve")) {
+      use_presolve(opts.get<bool>("use_presolve")),
+      symmetry_breaking_level(opts.get<int>("symmetry_breaking_level")) {
     lp_solver.set_mip_gap(0);
     named_vector::NamedVector<lp::LPVariable> variables;
     double infinity = lp_solver.get_infinity();
@@ -29,6 +30,7 @@ OperatorCountingHeuristic::OperatorCountingHeuristic(const plugins::Options &opt
         generator->initialize_constraints(task, lp);
     }
     lp_solver.set_use_presolve(use_presolve);
+    lp_solver.set_symmetry_breaking(symmetry_breaking_level);
     lp_solver.load_problem(lp);
 }
 
@@ -98,6 +100,13 @@ public:
             "turn presolving on or off. Using presolve creates an overhead "
             "so turning presolve off might decrease runtime.",
             "true");
+
+        add_option<int>(
+            "symmetry_breaking_level",
+            "turn symmetry_breaking off or on. -1 is automatic, 0 is off, "
+            "1 to 5 are the different levels of symmetry breaking on, where "
+            "1 is minimal and 5 is very aggressive."
+            "-1");
 
         lp::add_lp_solver_option_to_feature(*this);
         Heuristic::add_options_to_feature(*this);

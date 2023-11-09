@@ -215,6 +215,10 @@ void LPSolver::set_use_presolve(const bool use_presolve) {
     pimpl->set_use_presolve(use_presolve);
 }
 
+void LPSolver::set_symmetry_breaking(const int symmetry_breaking_level) {
+    pimpl->set_symmetry_breaking(symmetry_breaking_level);
+}
+
 vector<double> LPSolver::extract_solution() const {
     return pimpl->extract_solution();
 }

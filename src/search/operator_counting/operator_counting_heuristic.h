@@ -20,6 +20,7 @@ class OperatorCountingHeuristic : public Heuristic {
     lp::LPSolver lp_solver;
     const bool use_integer_operator_counts;
     const bool use_presolve;
+    const bool symmetry_breaking_level;
 protected:
     virtual int compute_heuristic(const State &ancestor_state) override;
 public:

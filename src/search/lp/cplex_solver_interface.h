@@ -224,6 +224,7 @@ public:
     virtual bool has_temporary_constraints() const override;
     virtual void print_statistics() const override;
     virtual void set_use_presolve(bool use_presolve) override;
+    virtual void set_symmetry_breaking(int symmetry_breaking_level) override;
 };
 }
 #endif

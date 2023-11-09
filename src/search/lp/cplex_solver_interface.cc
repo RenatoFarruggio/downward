@@ -604,5 +604,11 @@ void CplexSolverInterface::set_use_presolve(bool use_presolve) {
     }
     CPX_CALL(CPXsetintparam, env, CPXPARAM_Preprocessing_Presolve, value);
 }
+
+void CplexSolverInterface::set_symmetry_breaking(int symmetry_breaking_level) {
+    cout << "Symmetry breaking is set to " << symmetry_breaking_level << endl;
+    CPXINT value = symmetry_breaking_level;
+    CPX_CALL(CPXsetintparam, env, CPXPARAM_Preprocessing_Symmetry, value);
+}
 }
 #endif
