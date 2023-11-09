@@ -105,7 +105,7 @@ public:
             "symmetry_breaking_level",
             "turn symmetry_breaking off or on. -1 is automatic, 0 is off, "
             "1 to 5 are the different levels of symmetry breaking on, where "
-            "1 is minimal and 5 is very aggressive."
+            "1 is minimal and 5 is very aggressive.",
             "-1");
 
         lp::add_lp_solver_option_to_feature(*this);
