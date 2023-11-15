@@ -121,7 +121,7 @@ public:
     bool is_unbounded() const;
 
     void set_use_presolve(const bool use_presolve);
-    void set_symmetry_breaking(const int symmetry_breaking);
+    void set_symmetry_breaking(const int symmetry_breaking_level);
 
     /*
       Return true if the solving the LP showed that it is bounded feasible and
