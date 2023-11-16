@@ -189,8 +189,7 @@ void LPSolver::solve() {
     utils::Timer solve_timer;
     pimpl->solve();
     solve_timer.stop();
-    cout << "LP solve time (seconds): " << solve_timer << endl;
-    exit(0);
+    cout << "LP solve time: " << solve_timer << endl;
 }
 
 void LPSolver::write_lp(const string &filename) const {

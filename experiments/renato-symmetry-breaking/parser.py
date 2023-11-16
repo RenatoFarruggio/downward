@@ -54,6 +54,11 @@ def main():
         r"New best heuristic value for .+: (\d+)\n",
         type=int,
     )
+    parser.add_pattern(
+        "lp_solve_time",
+        r"LP solve time: (.+)s",
+        type=float,
+    )
     parser.parse()
 
 
