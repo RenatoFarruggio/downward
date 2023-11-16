@@ -221,7 +221,6 @@ void LPSolver::set_use_presolve(const bool use_presolve) {
 }
 
 void LPSolver::set_symmetry_breaking(const int symmetry_breaking_level) {
-    cout << "[lp_solver.cc:set_symmetry_breaking] Symmetry breaking is set to " << symmetry_breaking_level << endl;
     pimpl->set_symmetry_breaking(symmetry_breaking_level);
 }
 
