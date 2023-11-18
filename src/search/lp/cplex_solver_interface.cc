@@ -610,5 +610,11 @@ void CplexSolverInterface::set_symmetry_breaking(int symmetry_breaking_level) {
     CPXINT value = symmetry_breaking_level;
     CPX_CALL(CPXsetintparam, env, CPXPARAM_Preprocessing_Symmetry, value);
 }
+
+void CplexSolverInterface::set_folding_level(int folding_level) {
+    cout << "Folding level is set to " << folding_level << endl;
+    CPXINT value = folding_level;
+    CPX_CALL(CPXsetintparam, env, CPXPARAM_Preprocessing_Folding, value);
+}
 }
 #endif

@@ -225,6 +225,7 @@ public:
     virtual void print_statistics() const override;
     virtual void set_use_presolve(bool use_presolve) override;
     virtual void set_symmetry_breaking(int symmetry_breaking_level) override;
+    virtual void set_folding_level(int folding_level) override;
 };
 }
 #endif

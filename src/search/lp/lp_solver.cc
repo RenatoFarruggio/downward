@@ -224,6 +224,10 @@ void LPSolver::set_symmetry_breaking(const int symmetry_breaking_level) {
     pimpl->set_symmetry_breaking(symmetry_breaking_level);
 }
 
+void LPSolver::set_folding_level(const int folding_level) {
+    pimpl->set_folding_level(folding_level);
+}
+
 vector<double> LPSolver::extract_solution() const {
     return pimpl->extract_solution();
 }

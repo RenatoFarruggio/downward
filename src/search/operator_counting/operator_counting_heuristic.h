@@ -21,6 +21,7 @@ class OperatorCountingHeuristic : public Heuristic {
     const bool use_integer_operator_counts;
     const bool use_presolve;
     const int symmetry_breaking_level;
+    const int folding_level;
 protected:
     virtual int compute_heuristic(const State &ancestor_state) override;
 public:

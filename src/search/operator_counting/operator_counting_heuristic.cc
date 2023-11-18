@@ -17,7 +17,8 @@ OperatorCountingHeuristic::OperatorCountingHeuristic(const plugins::Options &opt
       lp_solver(opts.get<lp::LPSolverType>("lpsolver")),
       use_integer_operator_counts(opts.get<bool>("use_integer_operator_counts")),
       use_presolve(opts.get<bool>("use_presolve")),
-      symmetry_breaking_level(opts.get<int>("symmetry_breaking_level")) {
+      symmetry_breaking_level(opts.get<int>("symmetry_breaking_level")),
+      folding_level(opts.get<int>("folding_level")) {
     lp_solver.set_mip_gap(0);
     named_vector::NamedVector<lp::LPVariable> variables;
     double infinity = lp_solver.get_infinity();
@@ -31,6 +32,7 @@ OperatorCountingHeuristic::OperatorCountingHeuristic(const plugins::Options &opt
     }
     lp_solver.set_use_presolve(use_presolve);
     lp_solver.set_symmetry_breaking(symmetry_breaking_level);
+    lp_solver.set_folding_level(folding_level);
     lp_solver.load_problem(lp);
 }
 
@@ -106,6 +108,13 @@ public:
             "turn symmetry_breaking off or on. -1 is automatic, 0 is off, "
             "1 to 5 are the different levels of symmetry breaking on, where "
             "1 is minimal and 5 is very aggressive.",
+            "-1");
+
+        add_option<int>(
+            "folding_level",
+            "turn folding_level off or on. -1 is automatic, 0 is off, "
+            "1 to 5 are the different levels of folding, where "
+            "1 is a moderate and 5 is an extremely aggressive level of folding.",
             "-1");
 
         lp::add_lp_solver_option_to_feature(*this);
