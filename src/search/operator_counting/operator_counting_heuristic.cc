@@ -18,7 +18,8 @@ OperatorCountingHeuristic::OperatorCountingHeuristic(const plugins::Options &opt
       use_integer_operator_counts(opts.get<bool>("use_integer_operator_counts")),
       use_presolve(opts.get<bool>("use_presolve")),
       symmetry_breaking_level(opts.get<int>("symmetry_breaking_level")),
-      folding_level(opts.get<int>("folding_level")) {
+      folding_level(opts.get<int>("folding_level")),
+      save_presolved_lp(opts.get<bool>("save_presolved_lp")) {
     lp_solver.set_mip_gap(0);
     named_vector::NamedVector<lp::LPVariable> variables;
     double infinity = lp_solver.get_infinity();
@@ -33,7 +34,9 @@ OperatorCountingHeuristic::OperatorCountingHeuristic(const plugins::Options &opt
     lp_solver.set_use_presolve(use_presolve);
     lp_solver.set_symmetry_breaking(symmetry_breaking_level);
     lp_solver.set_folding_level(folding_level);
+    lp_solver.set_save_presolved_lp(save_presolved_lp);
     lp_solver.load_problem(lp);
+
 }
 
 OperatorCountingHeuristic::~OperatorCountingHeuristic() {
@@ -116,6 +119,17 @@ public:
             "1 to 5 are the different levels of folding, where "
             "1 is a moderate and 5 is an extremely aggressive level of folding.",
             "-1");
+
+        add_option<bool>(
+            "save_presolved_lp",
+            "turn saving of the presolved lp to the disk off or on. "
+            "When turned on, the presolved LP will be saved to the disk. "
+            "When turned on, only the initial state will be evaluated, "
+            "and then the planner will exit. This setting is not intended "
+            "to be used in competitions and actual planning, but for "
+            "research and understanding the presolving step only.",
+            "false"
+        );
 
         lp::add_lp_solver_option_to_feature(*this);
         Heuristic::add_options_to_feature(*this);

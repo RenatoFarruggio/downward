@@ -228,6 +228,10 @@ void LPSolver::set_folding_level(const int folding_level) {
     pimpl->set_folding_level(folding_level);
 }
 
+void LPSolver::set_save_presolved_lp(const bool save_presolved_lp) {
+    pimpl->set_save_presolved_lp(save_presolved_lp);
+}
+
 vector<double> LPSolver::extract_solution() const {
     return pimpl->extract_solution();
 }

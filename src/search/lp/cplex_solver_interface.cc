@@ -616,5 +616,15 @@ void CplexSolverInterface::set_folding_level(int folding_level) {
     CPXINT value = folding_level;
     CPX_CALL(CPXsetintparam, env, CPXPARAM_Preprocessing_Folding, value);
 }
+
+void CplexSolverInterface::set_save_presolved_lp(bool save_presolved_lp) {
+    CPXINT value = save_presolved_lp? CPX_ON: CPX_OFF;
+    if (save_presolved_lp) {
+        cout << "Saving presolved lp is turned on" << endl;
+        cout << "[TOOD] Saving presolved LP is not yet implemented! (this message comes from cplex_solver_interface.cc)" << endl;
+    } else {
+        cout << "Saving presolved lp is turned off" << endl;
+    }
+}
 }
 #endif
