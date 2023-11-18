@@ -618,12 +618,22 @@ void CplexSolverInterface::set_folding_level(int folding_level) {
 }
 
 void CplexSolverInterface::set_save_presolved_lp(bool save_presolved_lp) {
-    CPXINT value = save_presolved_lp? CPX_ON: CPX_OFF;
+    //CPXINT value = save_presolved_lp? CPX_ON: CPX_OFF;
     if (save_presolved_lp) {
         cout << "Saving presolved lp is turned on" << endl;
         cout << "[TOOD] Saving presolved LP is not yet implemented! (this message comes from cplex_solver_interface.cc)" << endl;
     } else {
         cout << "Saving presolved lp is turned off" << endl;
+    }
+}
+
+void CplexSolverInterface::set_use_warm_starts(bool use_warm_starts) {
+    //CPXINT value = use_warm_starts? CPX_ON : CPX_OFF;
+    if (use_warm_starts) {
+        cout << "Using warm starts is turned on" << endl;
+        cout << "[TODO] Warm starting LPs are not yet implemented! (this message comes from cplex_solver_interface.cc)" << endl;
+    } else {
+        cout << "Using warm starts is turned off" << endl;
     }
 }
 }

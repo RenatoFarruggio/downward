@@ -232,6 +232,10 @@ void LPSolver::set_save_presolved_lp(const bool save_presolved_lp) {
     pimpl->set_save_presolved_lp(save_presolved_lp);
 }
 
+void LPSolver::set_use_warm_starts(const bool use_warm_starts) {
+    pimpl->set_use_warm_starts(use_warm_starts);
+}
+
 vector<double> LPSolver::extract_solution() const {
     return pimpl->extract_solution();
 }

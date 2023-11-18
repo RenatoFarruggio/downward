@@ -124,6 +124,7 @@ public:
     void set_symmetry_breaking(const int symmetry_breaking_level);
     void set_folding_level(const int folding_level);
     void set_save_presolved_lp(const bool save_presolved_lp);
+    void set_use_warm_starts(const bool use_warm_starts);
 
     /*
       Return true if the solving the LP showed that it is bounded feasible and

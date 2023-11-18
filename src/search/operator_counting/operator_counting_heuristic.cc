@@ -19,7 +19,8 @@ OperatorCountingHeuristic::OperatorCountingHeuristic(const plugins::Options &opt
       use_presolve(opts.get<bool>("use_presolve")),
       symmetry_breaking_level(opts.get<int>("symmetry_breaking_level")),
       folding_level(opts.get<int>("folding_level")),
-      save_presolved_lp(opts.get<bool>("save_presolved_lp")) {
+      save_presolved_lp(opts.get<bool>("save_presolved_lp")),
+      use_warm_starts(opts.get<bool>("use_warm_starts")) {
     lp_solver.set_mip_gap(0);
     named_vector::NamedVector<lp::LPVariable> variables;
     double infinity = lp_solver.get_infinity();
@@ -35,6 +36,7 @@ OperatorCountingHeuristic::OperatorCountingHeuristic(const plugins::Options &opt
     lp_solver.set_symmetry_breaking(symmetry_breaking_level);
     lp_solver.set_folding_level(folding_level);
     lp_solver.set_save_presolved_lp(save_presolved_lp);
+    lp_solver.set_use_warm_starts(use_warm_starts);
     lp_solver.load_problem(lp);
 
 }
@@ -130,6 +132,18 @@ public:
             "research and understanding the presolving step only.",
             "false"
         );
+
+        add_option<bool>(
+            "use_warm_starts",
+            "turn warm starts off or on. When turned on, the solution "
+            "vector of the last LP is saved, and the next LP will "
+            "be solved in two steps, taking the last solution vector as "
+            "starting point. First, the constraints that relax "
+            "the problem are added, then the new LP is solved using "
+            "the primal simplex algorithm. In the second step, the tightening "
+            "constraints are added, and this new LP is solved using "
+            "the dual simplex algorithm.",
+            "false");
 
         lp::add_lp_solver_option_to_feature(*this);
         Heuristic::add_options_to_feature(*this);

@@ -227,6 +227,7 @@ public:
     virtual void set_symmetry_breaking(int symmetry_breaking_level) override;
     virtual void set_folding_level(int folding_level) override;
     virtual void set_save_presolved_lp(bool save_presolved_lp) override;
+    virtual void set_use_warm_starts(bool use_warm_starts) override;
 };
 }
 #endif

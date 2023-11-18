@@ -23,6 +23,7 @@ class OperatorCountingHeuristic : public Heuristic {
     const int symmetry_breaking_level;
     const int folding_level;
     const int save_presolved_lp;
+    const bool use_warm_starts;
 protected:
     virtual int compute_heuristic(const State &ancestor_state) override;
 public:
