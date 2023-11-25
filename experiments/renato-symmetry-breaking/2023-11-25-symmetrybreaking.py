@@ -22,7 +22,7 @@ else:
     SUITE = ["depot:p01.pddl", "grid:prob01.pddl", "gripper:prob01.pddl"]
     ENV = project.LocalEnvironment(processes=2)
 
-bound = 1
+bound = 0
 CONFIGS = [
     (f"config_bound_{bound}_with_auto_symmetry_breaking", ["--search", f"astar(operatorcounting([state_equation_constraints()],symmetry_breaking_level=-1),bound={bound})"]),
     (f"config_bound_{bound}_with_no_symmetry_breaking", ["--search", f"astar(operatorcounting([state_equation_constraints()],symmetry_breaking_level=0),bound={bound})"]),
