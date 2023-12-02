@@ -14,7 +14,7 @@ REMOTE_REPOS_DIR = "/infai/farren00/workspace/"
 REVISION_CACHE = os.environ.get("DOWNWARD_REVISION_CACHE")
 if project.REMOTE:
     print("Running on REMOTE.")
-    SUITE = project.SUITE_OPTIMAL
+    SUITE = project.SUITE_OPTIMAL_STRIPS
     ENV = project.BaselSlurmEnvironment(email="renato.farruggio@unibas.ch")
 else:
     print("Running LOCALLY.")
