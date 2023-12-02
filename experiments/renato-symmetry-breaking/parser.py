@@ -59,6 +59,11 @@ def main():
         r"LP solve time: (.+)s",
         type=float,
     )
+    parser.add_pattern(
+        "symmetry_breaking_level",
+        r"Symmetry breaking is set to (.+)",
+        type=int,
+    )
     parser.parse()
 
 
