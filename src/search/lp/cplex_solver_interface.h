@@ -14,6 +14,7 @@ namespace lp {
 class CplexSolverInterface : public SolverInterface {
     CPXENVptr env;
     CPXLPptr problem;
+    bool save_presolved_problem_to_file_and_exit;
     bool is_mip;
     int num_permanent_constraints;
 
@@ -227,6 +228,7 @@ public:
     virtual void set_symmetry_breaking(int symmetry_breaking_level) override;
     virtual void set_folding_level(int folding_level) override;
     virtual void set_save_presolved_lp(bool save_presolved_lp) override;
+    virtual void save_presolved_problem_to_file(std::string filename) override;
     virtual void set_use_warm_starts(bool use_warm_starts) override;
 };
 }

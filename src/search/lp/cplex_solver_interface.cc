@@ -237,7 +237,8 @@ void CplexSolverInterface::CplexRowsInfo::assign(const named_vector::NamedVector
 }
 
 CplexSolverInterface::CplexSolverInterface()
-    : env(nullptr), problem(nullptr), is_mip(false),
+    : env(nullptr), problem(nullptr), 
+      save_presolved_problem_to_file_and_exit(false), is_mip(false),
       num_permanent_constraints(0), num_unsatisfiable_constraints(0),
       num_unsatisfiable_temp_constraints(0) {
     int status = 0;
@@ -454,6 +455,12 @@ void CplexSolverInterface::set_mip_gap(double gap) {
 }
 
 void CplexSolverInterface::solve() {
+    if (save_presolved_problem_to_file_and_exit) {
+        save_presolved_problem_to_file("problem.pre");
+        cout << "Saving presolved problem to file and exiting..." << endl;
+        exit(0);
+    }
+
     if (is_trivially_unsolvable()) {
         return;
     } else if (is_mip) {
@@ -620,11 +627,20 @@ void CplexSolverInterface::set_folding_level(int folding_level) {
 void CplexSolverInterface::set_save_presolved_lp(bool save_presolved_lp) {
     //CPXINT value = save_presolved_lp? CPX_ON: CPX_OFF;
     if (save_presolved_lp) {
+        save_presolved_problem_to_file_and_exit = true;
         cout << "Saving presolved lp is turned on" << endl;
         cout << "[TOOD] Saving presolved LP is not yet implemented! (this message comes from cplex_solver_interface.cc)" << endl;
     } else {
+        save_presolved_problem_to_file_and_exit = false;
         cout << "Saving presolved lp is turned off" << endl;
     }
+}
+
+void CplexSolverInterface::save_presolved_problem_to_file(std::string filename) {
+    cout << "Saving presolved problem to file " << filename << " ..." << endl;
+    double objOffset = 0.0;
+    CPX_CALL(CPXpreslvwrite, env, problem, filename.c_str(), &objOffset);
+    cout << "Offset is: " << objOffset << endl;
 }
 
 void CplexSolverInterface::set_use_warm_starts(bool use_warm_starts) {
@@ -636,5 +652,6 @@ void CplexSolverInterface::set_use_warm_starts(bool use_warm_starts) {
         cout << "Using warm starts is turned off" << endl;
     }
 }
+
 }
 #endif

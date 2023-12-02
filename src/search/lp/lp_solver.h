@@ -124,6 +124,7 @@ public:
     void set_symmetry_breaking(const int symmetry_breaking_level);
     void set_folding_level(const int folding_level);
     void set_save_presolved_lp(const bool save_presolved_lp);
+    void save_presolved_problem_to_file(const std::string filename);
     void set_use_warm_starts(const bool use_warm_starts);
 
     /*
