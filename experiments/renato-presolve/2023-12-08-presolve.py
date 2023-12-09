@@ -25,6 +25,8 @@ else:
 
 bound = 0
 CONFIGS = [
+    # save_presolved_lp=true
+    # use_presolve=false
     (f"config_bound_{bound}_with_auto_symmetry_breaking", ["--search", f"astar(operatorcounting([state_equation_constraints()],symmetry_breaking_level=-1),bound={bound})"]),
     (f"config_bound_{bound}_with_no_symmetry_breaking", ["--search", f"astar(operatorcounting([state_equation_constraints()],symmetry_breaking_level=0),bound={bound})"]),
     (f"config_bound_{bound}_with_symmetry_breaking_level_1", ["--search", f"astar(operatorcounting([state_equation_constraints()],symmetry_breaking_level=1),bound={bound})"]),
@@ -36,7 +38,7 @@ CONFIGS = [
 BUILD_OPTIONS = []
 DRIVER_OPTIONS = ["--overall-time-limit", "5m"]
 REV_NICKS = [
-    ("symmetrybreaking", "presolvetiming"),
+    ("symmetrybreaking", "nonzerocounting"),
 ]
 ATTRIBUTES = [
     "error",
@@ -60,9 +62,9 @@ ATTRIBUTES_COMPARATIVE = [
 
 ALGORITHM_PAIRS = [
     (
-        "presolvetiming:config_bound_0_with_auto_symmetry_breaking",
-        "presolvetiming:config_bound_0_with_auto_symmetry_breaking",
-        "presolvetiming:config_bound_0_with_symmetry_breaking_level_5"
+        "nonzerocounting:config_bound_0_with_auto_symmetry_breaking",
+        "nonzerocounting:config_bound_0_with_auto_symmetry_breaking",
+        "nonzerocounting:config_bound_0_with_symmetry_breaking_level_5"
     )
 ]
 
@@ -90,8 +92,14 @@ exp.add_step("build", exp.build)
 exp.add_step("start", exp.start_runs)
 exp.add_fetcher(name="fetch")
 
+def add_presolve_time_per_total_time(run):
+    total_time = run.get("total_time")
+    lp_solve_time = run.get("lp_solve_time")
+    run["presolve_time_per_total_time"] = lp_solve_time / total_time
+    return run
+
 project.add_absolute_report(
-    exp, attributes=ATTRIBUTES, filter=[project.add_evaluations_per_time]
+    exp, attributes=ATTRIBUTES + ["presolve_time_per_total_time"], filter=[add_presolve_time_per_total_time, project.add_evaluations_per_time]
 )
 
 project.add_comparative_report(
