@@ -213,6 +213,7 @@ public:
     virtual void set_variable_upper_bound(int index, double bound) override;
     virtual void set_mip_gap(double gap) override;
     virtual void solve() override;
+    virtual void solve_with_statistics() override;
     virtual void write_lp(const std::string &filename) const override;
     virtual void print_failure_analysis() const override;
     virtual bool is_infeasible() const override;

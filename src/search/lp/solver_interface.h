@@ -32,6 +32,7 @@ public:
     virtual void set_mip_gap(double gap) = 0;
 
     virtual void solve() = 0;
+    virtual void solve_with_statistics() = 0;
     virtual void write_lp(const std::string &filename) const = 0;
     virtual void print_failure_analysis() const = 0;
     virtual bool is_infeasible() const = 0;

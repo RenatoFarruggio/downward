@@ -115,6 +115,7 @@ public:
     void set_mip_gap(double gap);
 
     void solve();
+    void solve_with_statistics();
     void write_lp(const std::string &filename) const;
     void print_failure_analysis() const;
     bool is_infeasible() const;

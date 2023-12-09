@@ -455,12 +455,6 @@ void CplexSolverInterface::set_mip_gap(double gap) {
 }
 
 void CplexSolverInterface::solve() {
-    if (save_presolved_problem_to_file_and_exit) {
-        save_presolved_problem_to_file("problem.pre");
-        cout << "Saving presolved problem to file and exiting..." << endl;
-        exit(0);
-    }
-
     if (is_trivially_unsolvable()) {
         return;
     } else if (is_mip) {
@@ -468,6 +462,14 @@ void CplexSolverInterface::solve() {
     } else {
         CPX_CALL(CPXlpopt, env, problem);
     }
+}
+
+void CplexSolverInterface::solve_with_statistics() {
+    print_statistics();
+    // For log file: CPXsetlogfilename
+    CPX_CALL(CPXsetintparam, env, CPXPARAM_ScreenOutput, CPX_ON);
+    solve();
+    CPX_CALL(CPXsetintparam, env, CPXPARAM_ScreenOutput, CPX_OFF);
 }
 
 void CplexSolverInterface::write_lp(const string &filename) const {
@@ -629,7 +631,6 @@ void CplexSolverInterface::set_save_presolved_lp(bool save_presolved_lp) {
     if (save_presolved_lp) {
         save_presolved_problem_to_file_and_exit = true;
         cout << "Saving presolved lp is turned on" << endl;
-        cout << "[TOOD] Saving presolved LP is not yet implemented! (this message comes from cplex_solver_interface.cc)" << endl;
     } else {
         save_presolved_problem_to_file_and_exit = false;
         cout << "Saving presolved lp is turned off" << endl;

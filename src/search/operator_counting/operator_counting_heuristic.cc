@@ -20,7 +20,8 @@ OperatorCountingHeuristic::OperatorCountingHeuristic(const plugins::Options &opt
       symmetry_breaking_level(opts.get<int>("symmetry_breaking_level")),
       folding_level(opts.get<int>("folding_level")),
       save_presolved_lp(opts.get<bool>("save_presolved_lp")),
-      use_warm_starts(opts.get<bool>("use_warm_starts")) {
+      use_warm_starts(opts.get<bool>("use_warm_starts")),
+      is_first(true) {
     lp_solver.set_mip_gap(0);
     named_vector::NamedVector<lp::LPVariable> variables;
     double infinity = lp_solver.get_infinity();
@@ -55,7 +56,13 @@ int OperatorCountingHeuristic::compute_heuristic(const State &ancestor_state) {
         }
     }
     int result;
-    lp_solver.solve();
+    if (is_first) {
+        lp_solver.solve_with_statistics();
+        is_first = false;
+        exit(1);
+    } else {
+        lp_solver.solve();
+    }
     if (lp_solver.has_optimal_solution()) {
         double epsilon = 0.01;
         double objective_value = lp_solver.get_objective_value();

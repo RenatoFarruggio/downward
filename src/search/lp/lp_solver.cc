@@ -192,6 +192,10 @@ void LPSolver::solve() {
     cout << "LP solve time: " << solve_timer << endl;
 }
 
+void LPSolver::solve_with_statistics() {
+    pimpl->solve_with_statistics();
+}
+
 void LPSolver::write_lp(const string &filename) const {
     pimpl->write_lp(filename);
 }
