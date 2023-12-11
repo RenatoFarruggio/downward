@@ -337,14 +337,14 @@ def add_absolute_report(exp, *, name=None, outfile=None, **kwargs):
 
     exp.add_report(report, name=name, outfile=outfile)
 
-def add_comparative_report(exp, *, name=None, outfile=None, **kwargs):
+def add_comparative_report(exp, *, name=None, outfile=None, name_postfix="comp", **kwargs):
     report = ComparativeReport(**kwargs)
     if name and not outfile:
         outfile = f"{name}.{report.output_format}"
     elif outfile and not name:
         name = Path(outfile).name
     elif not name and not outfile:
-        name = f"{exp.name}-comp"
+        name = f"{exp.name}-{name_postfix}"
         outfile = f"{name}.{report.output_format}"
 
     if not Path(outfile).is_absolute():

@@ -54,7 +54,38 @@ def main():
         r"New best heuristic value for .+: (\d+)\n",
         type=int,
     )
+    # "presolve time"
+    # Presolve time = 0.00 sec.
     parser.add_pattern(
+        "presolve_time",
+        r"Presolve time = (.+) sec.",
+        type=float,
+    )
+
+    # "Actual search time"
+    # Actual search time: 0.00147077s
+    parser.add_pattern(
+        "actual_search_time",
+        r"\] Actual search time: (.+)s",
+        type=float,
+    )
+
+    # "search_time"
+    # Search time: 0.00241889s
+    parser.add_pattern(
+        "search_time",
+        r"\] Search time: (.+)s",
+        type=float,
+    )
+
+    # "my_total_time"
+    # Total time: 0.00657609s
+    parser.add_pattern(
+        "my_total_time",
+        r"\] Total time: (.+)s",
+        type=float,
+    )
+    parser.add_repeated_pattern(
         "lp_solve_time",
         r"LP solve time: (.+)s",
         type=float,
