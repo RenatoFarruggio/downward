@@ -59,7 +59,6 @@ int OperatorCountingHeuristic::compute_heuristic(const State &ancestor_state) {
     if (is_first) {
         lp_solver.solve_with_statistics();
         is_first = false;
-        exit(1);
     } else {
         lp_solver.solve();
     }
