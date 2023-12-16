@@ -78,14 +78,6 @@ def main():
         type=float,
     )
 
-    # "my_total_time"
-    # Total time: 0.00657609s
-    parser.add_pattern(
-        "my_total_time",
-        r"\] Total time: (.+)s",
-        type=float,
-    )
-
     def sum_up_lp_solve_time(content, props):
         matches = re.findall(r"LP solve time: (.+)s", content)
         props["lp_solve_time_sum"] = sum([float(t) for t in matches])
