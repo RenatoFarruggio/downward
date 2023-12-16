@@ -85,11 +85,12 @@ def main():
         r"\] Total time: (.+)s",
         type=float,
     )
-    parser.add_repeated_pattern(
-        "lp_solve_time",
-        r"LP solve time: (.+)s",
-        type=float,
-    )
+
+    def sum_up_lp_solve_time(content, props):
+        matches = re.findall(r"LP solve time: (.+)s", content)
+        props["lp_solve_time_sum"] = sum([float(t) for t in matches])
+
+    parser.add_function(sum_up_lp_solve_time)
     parser.add_pattern(
         "symmetry_breaking_level",
         r"Symmetry breaking is set to (.+)",

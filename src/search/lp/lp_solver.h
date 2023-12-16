@@ -4,6 +4,7 @@
 #include "solver_interface.h"
 
 #include "../algorithms/named_vector.h"
+#include "../utils/timer.h"
 
 #include <iostream>
 #include <memory>
@@ -100,6 +101,7 @@ class LPSolver {
 public:
     explicit LPSolver(LPSolverType solver_type);
 
+    mutable utils::Timer solve_timer;
     void load_problem(const LinearProgram &lp);
     void add_temporary_constraints(const named_vector::NamedVector<LPConstraint> &constraints);
     void clear_temporary_constraints();
@@ -116,6 +118,8 @@ public:
 
     void solve();
     void solve_with_statistics();
+    double get_lp_solve_time_sum() const;
+    double get_lp_solve_time_sum_and_reset() const;
     void write_lp(const std::string &filename) const;
     void print_failure_analysis() const;
     bool is_infeasible() const;

@@ -41,6 +41,13 @@ public:
 
     virtual void get_path_dependent_evaluators(
         std::set<Evaluator *> &evals) override;
+
+    virtual void print_statistics() const override {
+        for (const auto &subevaluator : subevaluators) {
+            subevaluator->print_statistics();
+        }
+    }
+
 };
 
 extern void add_combining_evaluator_options_to_feature(

@@ -112,6 +112,7 @@ void LinearProgram::set_objective_name(string name) {
 
 LPSolver::LPSolver(LPSolverType solver_type) {
     string missing_solver;
+    utils::Timer solve_timer = utils::Timer(false); // Do not start timer immediately
     switch (solver_type) {
     case LPSolverType::CPLEX:
 #ifdef HAS_CPLEX
@@ -186,14 +187,21 @@ void LPSolver::set_mip_gap(double gap) {
 }
 
 void LPSolver::solve() {
-    utils::Timer solve_timer;
+    solve_timer.resume();
     pimpl->solve();
     solve_timer.stop();
-    cout << "LP solve time: " << solve_timer << endl;
 }
 
 void LPSolver::solve_with_statistics() {
     pimpl->solve_with_statistics();
+}
+
+double LPSolver::get_lp_solve_time_sum() const {
+    return solve_timer.stop();
+}
+
+double LPSolver::get_lp_solve_time_sum_and_reset() const {
+    return solve_timer.reset();
 }
 
 void LPSolver::write_lp(const string &filename) const {
@@ -261,6 +269,7 @@ int LPSolver::has_temporary_constraints() const {
 }
 
 void LPSolver::print_statistics() const {
+    utils::g_log << "LP solve time sum: " << get_lp_solve_time_sum_and_reset() << "s" << endl;
     pimpl->print_statistics();
 }
 

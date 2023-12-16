@@ -105,13 +105,14 @@ void EagerSearch::print_statistics() const {
     statistics.print_detailed_statistics();
     search_space.print_statistics();
     pruning_method->print_statistics();
+    f_evaluator->print_statistics();
 }
 
 SearchStatus EagerSearch::step() {
     optional<SearchNode> node;
     while (true) {
         if (open_list->empty()) {
-            log << "Completely explored state space -- no solution!" << endl;
+            log << "Completely explored state space -- no solution!" << endl;         
             return FAILED;
         }
         StateID id = open_list->remove_min();

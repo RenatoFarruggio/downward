@@ -30,6 +30,8 @@ protected:
 public:
     explicit OperatorCountingHeuristic(const plugins::Options &opts);
     ~OperatorCountingHeuristic();
+    
+    virtual void print_statistics() const override;
 };
 }
 

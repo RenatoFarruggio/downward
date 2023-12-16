@@ -4,6 +4,7 @@
 
 #include "../plugins/plugin.h"
 #include "../utils/markup.h"
+#include "../utils/logging.h"
 
 #include <cmath>
 
@@ -43,6 +44,12 @@ OperatorCountingHeuristic::OperatorCountingHeuristic(const plugins::Options &opt
 }
 
 OperatorCountingHeuristic::~OperatorCountingHeuristic() {
+}
+
+void OperatorCountingHeuristic::print_statistics() const
+{
+    utils::g_log << "LP statistics for operator-counting heuristic:" << endl;
+    lp_solver.print_statistics();
 }
 
 int OperatorCountingHeuristic::compute_heuristic(const State &ancestor_state) {
