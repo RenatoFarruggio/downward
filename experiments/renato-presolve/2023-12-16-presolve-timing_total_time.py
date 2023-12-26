@@ -117,4 +117,6 @@ project.add_absolute_report(
 
 project.add_scp_step(exp, "grid", "workspace/downward-projects/")
 
+exp.add_parse_again_step()
+
 exp.run_steps()
