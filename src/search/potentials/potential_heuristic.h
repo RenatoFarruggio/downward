@@ -3,6 +3,8 @@
 
 #include "../heuristic.h"
 
+#include "../lp/lp_solver.h"
+
 #include <memory>
 
 namespace potentials {
@@ -12,6 +14,7 @@ class PotentialFunction;
   Use an internal potential function to evaluate a given state.
 */
 class PotentialHeuristic : public Heuristic {
+    lp::LPSolver lp_solver;
     std::unique_ptr<PotentialFunction> function;
 
 protected:
@@ -22,6 +25,8 @@ public:
         const plugins::Options &opts, std::unique_ptr<PotentialFunction> function);
     // Define in .cc file to avoid include in header.
     ~PotentialHeuristic();
+
+    virtual void print_statistics() const override;
 };
 }
 
