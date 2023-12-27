@@ -1,4 +1,5 @@
 from pathlib import Path
+import os
 import platform
 import re
 import subprocess
@@ -267,7 +268,17 @@ def _get_exp_dir_relative_to_repo():
 
 
 def add_scp_step(exp, login, repos_dir):
+    # Define the remote experiment directory
     remote_exp = Path(repos_dir) / _get_exp_dir_relative_to_repo()
+    
+    # Define the local evaluation directory
+    local_eval_dir = Path(f"{exp.path}-eval")
+    
+    # Check if the local evaluation directory exists, and create it if it doesn't
+    if not local_eval_dir.exists():
+        os.makedirs(local_eval_dir)
+    
+    
     exp.add_step(
         "scp-eval-dir",
         subprocess.call,
