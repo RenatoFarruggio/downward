@@ -104,8 +104,8 @@ project.add_absolute_report(
 # Plotting
 attributes = ["total_time"]
 pairs = [
-    ("presolvetiming:config_total_time_initial_state_potential_heuristic_presolve_on",
-     "presolvetiming:config_total_time_initial_state_potential_heuristic_presolve_off"),
+    ("presolvetiming:config_initial_state_potential_heuristic_presolve_on",
+     "presolvetiming:config_initial_state_potential_heuristic_presolve_off"),
 ]
 suffix = "-rel" if project.RELATIVE else ""
 for algo1, algo2 in pairs:
