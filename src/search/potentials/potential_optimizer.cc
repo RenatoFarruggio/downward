@@ -24,7 +24,8 @@ PotentialOptimizer::PotentialOptimizer(const plugins::Options &opts)
       task_proxy(*task),
       lp_solver(opts.get<lp::LPSolverType>("lpsolver")),
       max_potential(opts.get<double>("max_potential")),
-      num_lp_vars(0) {
+      num_lp_vars(0),
+      is_first(true) {
     lp_solver.set_use_presolve(opts.get<bool>("use_presolve"));
     task_properties::verify_no_axioms(task_proxy);
     task_properties::verify_no_conditional_effects(task_proxy);
@@ -189,7 +190,12 @@ void PotentialOptimizer::construct_lp() {
 }
 
 void PotentialOptimizer::solve_and_extract() {
-    lp_solver.solve();
+    if (is_first) {
+        lp_solver.solve_with_statistics();
+        is_first = false;
+    } else {
+        lp_solver.solve();
+    }
     if (has_optimal_solution()) {
         extract_lp_solution();
     }

@@ -55,6 +55,7 @@ class PotentialOptimizer {
     void construct_lp();
     void solve_and_extract();
     void extract_lp_solution();
+    bool is_first;
 
 public:
     explicit PotentialOptimizer(const plugins::Options &opts);
