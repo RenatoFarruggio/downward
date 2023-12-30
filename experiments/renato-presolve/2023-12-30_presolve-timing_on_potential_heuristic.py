@@ -121,18 +121,18 @@ for algo1, algo2 in pairs:
             name=f"{exp.name}-{algo1}-vs-{algo2}-{attr}{suffix}",
         )
 
-#comparative_attributes_list = [
-#    ["total_time", "my_total_time"],
-#    ["search_time", "total_time"]
-#]
+comparative_attributes_list = [
+    ["coverage"]
+]
 
-#for comparative_attributes in comparative_attributes_list:
-#    project.add_comparative_report(
-#        exp, 
-#        attributes=comparative_attributes,
-#        algorithm_pairs=[("presolvetiming:config_timing_with_presolve", "presolvetiming:config_timing_without_presolve")],
-#        name_postfix=f"{comparative_attributes[0]}-vs-{comparative_attributes[1]}"
-#    )
+for comparative_attributes in comparative_attributes_list:
+    project.add_comparative_report(
+        exp, 
+        attributes=comparative_attributes,
+        algorithm_pairs=[("presolvetiming:config_initial_state_potential_heuristic_presolve_on",
+                          "presolvetiming:config_initial_state_potential_heuristic_presolve_off")],
+        name_postfix=f"{comparative_attributes[0]}"#-vs-{comparative_attributes[1]}"
+    )
 
 project.add_scp_step(exp, "grid", "workspace/downward-projects/")
 
