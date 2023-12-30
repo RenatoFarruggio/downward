@@ -23,8 +23,8 @@ else:
     ENV = project.LocalEnvironment(processes=2)
 
 CONFIGS = [
-    ("config_total_time_initial_state_potential_heuristic_presolve_off", ["--search", "astar(initial_state_potential(use_presolve=false))"]),
-    ("config_total_time_initial_state_potential_heuristic_presolve_on", ["--search", "astar(initial_state_potential(use_presolve=true))"]),
+    ("config_initial_state_potential_heuristic_presolve_off", ["--search", "astar(initial_state_potential(use_presolve=false))"]),
+    ("config_initial_state_potential_heuristic_presolve_on", ["--search", "astar(initial_state_potential(use_presolve=true))"]),
 ]
 
 BUILD_OPTIONS = []
