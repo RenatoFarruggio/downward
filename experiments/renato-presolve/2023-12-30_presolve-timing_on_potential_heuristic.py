@@ -80,11 +80,11 @@ def add_presolve_time_per_total_time(run):
     run["presolve_time_per_total_time"] = lp_solve_time / total_time
     return run
 
-def add_total_time_minus_actual_search_time(run):
+def add_total_time_minus_search_time(run):
     total_time = run.get("total_time")
-    actual_search_time = run.get("actual_search_time")
+    actual_search_time = run.get("search_time")
     if total_time is not None and actual_search_time is not None:
-        run["total_time_minus_actual_search_time"] = total_time - actual_search_time
+        run["total_time_minus_search_time"] = total_time - actual_search_time
     return run
 
 def remove_short_running_lps(run):
@@ -95,9 +95,10 @@ def remove_short_running_lps(run):
 
 project.add_absolute_report(
     exp,
-    attributes=ATTRIBUTES + ["total_time_minus_actual_search_time"], 
-    #filter=[remove_short_running_lps, add_total_time_minus_actual_search_time, project.add_evaluations_per_time], 
-    filter=[project.add_evaluations_per_time]
+    attributes=ATTRIBUTES + ["total_time_minus_search_time"], 
+    filter=[add_total_time_minus_search_time, project.add_evaluations_per_time], 
+    #filter=[remove_short_running_lps, add_total_time_minus_search_time, project.add_evaluations_per_time], 
+    #filter=[project.add_evaluations_per_time]
 )
 
 # Plotting

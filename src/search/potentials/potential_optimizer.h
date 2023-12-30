@@ -47,6 +47,7 @@ class PotentialOptimizer {
     lp::LPSolver lp_solver;
     const double max_potential;
     int num_lp_vars;
+    bool is_first;
     std::vector<std::vector<int>> lp_var_ids;
     std::vector<std::vector<double>> fact_potentials;
 
@@ -55,7 +56,6 @@ class PotentialOptimizer {
     void construct_lp();
     void solve_and_extract();
     void extract_lp_solution();
-    bool is_first;
 
 public:
     explicit PotentialOptimizer(const plugins::Options &opts);
