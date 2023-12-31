@@ -2,6 +2,7 @@
 
 #include "cplex_solver_interface.h"
 #include "soplex_solver_interface.h"
+#include "cplex_twophase_solver_interface.h"
 
 #include "../plugins/plugin.h"
 
@@ -117,6 +118,7 @@ LPSolver::LPSolver(LPSolverType solver_type) {
     case LPSolverType::CPLEX:
 #ifdef HAS_CPLEX
         pimpl = make_unique<CplexSolverInterface>();
+        utils::g_log << "Using CPLEX" << endl;
 #else
         missing_solver = "CPLEX";
 #endif
@@ -124,8 +126,17 @@ LPSolver::LPSolver(LPSolverType solver_type) {
     case LPSolverType::SOPLEX:
 #ifdef HAS_SOPLEX
         pimpl = make_unique<SoPlexSolverInterface>();
+        utils::g_log << "Using SOPLEX" << endl;
 #else
         missing_solver = "SoPlex";
+#endif
+        break;
+    case LPSolverType::CPLEX_TWOPHASE:
+#ifdef HAS_CPLEX
+        pimpl = make_unique<CplexTwoPhaseSolverInterface>();
+        utils::g_log << "Using CPLEX twophase" << endl;
+#else
+        missing_solver = "CPLEX";
 #endif
         break;
     default:
@@ -275,6 +286,7 @@ void LPSolver::print_statistics() const {
 
 static plugins::TypedEnumPlugin<LPSolverType> _enum_plugin({
         {"cplex", "commercial solver by IBM"},
-        {"soplex", "open source solver by ZIB"}
+        {"soplex", "open source solver by ZIB"},
+        {"cplex_twophase", "commercial solver CPLEX by IBM, adapted for twophase warmstarting"}
     });
 }

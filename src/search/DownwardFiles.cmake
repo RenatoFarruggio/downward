@@ -477,6 +477,7 @@ fast_downward_plugin(
     HELP "Interface to an LP solver"
     SOURCES
         lp/cplex_solver_interface
+        lp/cplex_twophase_solver_interface
         lp/lp_internals
         lp/lp_solver
         lp/solver_interface
