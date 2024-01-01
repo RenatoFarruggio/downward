@@ -455,6 +455,16 @@ void CplexTwoPhaseSolverInterface::set_mip_gap(double gap) {
 }
 
 void CplexTwoPhaseSolverInterface::solve() {
+
+    if (is_mip) {
+        cout << "LP detected: 0" << endl;
+        cout << "MIP detected: 1" << endl;
+    } else {
+        cout << "LP detected: 1" << endl;
+        cout << "MIP detected: 0" << endl;
+    }
+    exit(0);
+
     if (is_trivially_unsolvable()) {
         return;
     } else if (is_mip) {

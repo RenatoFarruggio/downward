@@ -94,6 +94,19 @@ def main():
         r"Symmetry breaking is set to (.+)",
         type=int,
     )
+
+    parser.add_pattern(
+        "lps_detected",
+        r"LP detected: (.+)",
+        type=int,
+    )
+
+    parser.add_pattern(
+        "mips_detected",
+        r"MIP detected: (.+)",
+        type=int,
+    )
+
     parser.parse()
 
 
