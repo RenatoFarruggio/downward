@@ -29,16 +29,30 @@ else:
     ]
     ENV = project.LocalEnvironment(processes=2)
 
+lpsolver="cplex_twophase"
+
+lm_factory_for_disjunctive_landmarks = "lm_rhw(disjunctive_landmarks=true, verbosity=normal, use_orders=true, only_causal_landmarks=false)"
+cost_partitioning_uniform_optimal = "optimal"
+landmark_disjunctive_landmarks = f"landmark_cost_partitioning({lm_factory_for_disjunctive_landmarks}, pref=false, prog_goal=true, prog_gn=true, prog_r=true, verbosity=normal, transform=no_transform(), cache_estimates=true, cost_partitioning={cost_partitioning_uniform_optimal}, alm=true, lpsolver={lpsolver})"
+
+lm_factory_for_optimal_cost_partitioning = "lm_hm(m=2, conjunctive_landmarks=true, verbosity=normal, use_orders=true)"
+landmark_optimal_cost_partitioning = f"landmark_cost_partitioning({lm_factory_for_optimal_cost_partitioning}, pref=false, prog_goal=true, prog_gn=true, prog_r=true, verbosity=normal, transform=no_transform(), cache_estimates=true, cost_partitioning=optimal, alm=true, lpsolver={lpsolver})"
+
 CONFIGS = [
-    ("config_initial_state_potential_heuristic_presolve_off", ["--search", "astar(operatorcounting([state_equation_constraints()],use_presolve=false,lpsolver=cplex_twophase))"]),
-    #("config_initial_state_potential_heuristic_presolve_on", ["--search", "astar(initial_state_potential(use_presolve=true))"]),
+    ("config_state_equation_heuristic_presolve_off", ["--search", f"astar(operatorcounting([state_equation_constraints()],use_presolve=false,lpsolver={lpsolver}))"]),  # state equation heuristic
+    ("config_delete relaxation_heuristic_presolve_off", ["--search", f"astar(operatorcounting([delete_relaxation_constraints()],use_presolve=false,lpsolver={lpsolver}))"]),  # delete relaxation heuristic
+    ("config_disjunctive_action_landmark_heuristic_presolve_off", ["--search", f"astar({landmark_disjunctive_landmarks})"]),  # disjunctive action landmark heuristic for abstractions 
+    ("config_optimal_cost_partitioning_heuristic_presolve_off", ["--search", f"astar({landmark_optimal_cost_partitioning})"]),  # optimal cost partitioning 
+    ("config_post_hoc_optimization_heuristic_presolve_off", ["--search", f"astar(operatorcounting([pho_constraints()],use_presolve=false,lpsolver={lpsolver}))"]),  # post hoc optimization
+    ("config_initial_state_potential_heuristic_presolve_off", ["--search", f"astar(initial_state_potential(use_presolve=false, lpsolver={lpsolver}))"]),   # potential heuristic
 ]
 
 
 BUILD_OPTIONS = []
 DRIVER_OPTIONS = ["--overall-time-limit", "5m"]
 REV_NICKS = [
-    ("symmetrybreaking", "presolvetiming"),
+    #("symmetrybreaking", "presolvetiming"),
+    ("symmetrybreaking", "mip_counter"),
 ]
 ATTRIBUTES = [
     "error",

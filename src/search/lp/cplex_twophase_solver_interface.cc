@@ -301,6 +301,20 @@ void CplexTwoPhaseSolverInterface::load_problem(const LinearProgram &lp) {
     problem = createProblem(env, "");
 
     const named_vector::NamedVector<LPVariable> &variables = lp.get_variables();
+    /*
+    cout << endl;
+    cout << "Debugging output:" << endl;
+    const named_vector::NamedVector<LPConstraint> &lpconstraints = lp.get_constraints();
+    int counter = 0;
+    cout << endl;
+    for (const LPConstraint &constraint : lpconstraints) {
+        cout << counter++ << endl;
+        constraint.dump(cout, &lp);
+        cout << endl;
+    }
+    cout << "Exiting for testing..." << endl;
+    exit(0);
+    */
     is_mip = any_of(variables.begin(), variables.end(), [](const LPVariable &v) {
                         return v.is_integer;
                     });
