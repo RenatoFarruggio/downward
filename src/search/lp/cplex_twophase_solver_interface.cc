@@ -301,23 +301,31 @@ void CplexTwoPhaseSolverInterface::load_problem(const LinearProgram &lp) {
     problem = createProblem(env, "");
 
     const named_vector::NamedVector<LPVariable> &variables = lp.get_variables();
-    /*
-    cout << endl;
-    cout << "Debugging output:" << endl;
-    const named_vector::NamedVector<LPConstraint> &lpconstraints = lp.get_constraints();
-    int counter = 0;
-    cout << endl;
-    for (const LPConstraint &constraint : lpconstraints) {
-        cout << counter++ << endl;
-        constraint.dump(cout, &lp);
-        cout << endl;
-    }
-    cout << "Exiting for testing..." << endl;
-    exit(0);
-    */
-    is_mip = any_of(variables.begin(), variables.end(), [](const LPVariable &v) {
-                        return v.is_integer;
-                    });
+
+//    named_vector::NamedVector<LPVariable> &variables = lp.get_variables();
+//
+//    LPVariable newIntegerVariable(1, 1, 1, true);
+//
+//    variables.push_back(newIntegerVariable);
+//
+//    cout << endl;
+//    cout << "Debugging output:" << endl;
+//    int counter = 0;
+//    cout << endl;
+//    for (const LPVariable &variable : variables) {
+//        cout << counter++ << endl;
+//        cout << "Is integer: " << variable.is_integer << endl;
+//        cout << "objective_coefficient: " << variable.objective_coefficient << endl;
+//        cout << endl;
+//    }
+//    cout << "Exiting for testing..." << endl;
+//    exit(0);
+    
+    //is_mip = any_of(variables.begin(), variables.end(), [](const LPVariable &v) {
+    //                    return v.is_integer;
+    //                });
+
+    is_mip = true;
 
     const named_vector::NamedVector<LPConstraint> &constraints = lp.get_constraints();
     num_permanent_constraints = constraints.size();
@@ -470,14 +478,13 @@ void CplexTwoPhaseSolverInterface::set_mip_gap(double gap) {
 
 void CplexTwoPhaseSolverInterface::solve() {
 
-    if (is_mip) {
-        cout << "LP detected: 0" << endl;
-        cout << "MIP detected: 1" << endl;
-    } else {
-        cout << "LP detected: 1" << endl;
-        cout << "MIP detected: 0" << endl;
-    }
-    exit(0);
+//    if (is_mip) {
+//        cout << "LP detected: 0" << endl;
+//        cout << "MIP detected: 1" << endl;
+//    } else {
+//        cout << "LP detected: 1" << endl;
+//        cout << "MIP detected: 0" << endl;
+//    }
 
     if (is_trivially_unsolvable()) {
         return;
