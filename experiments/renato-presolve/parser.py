@@ -107,6 +107,48 @@ def main():
         type=int,
     )
 
+    parser.add_pattern(
+        "lp_variables",
+        r"LP variables: (.+)",
+        type=int,
+    )
+
+    parser.add_pattern(
+        "lp_constraints",
+        r"LP constraints: (.+)",
+        type=int,
+    )
+
+    parser.add_pattern(
+        "lp_nonzero_entries",
+        r"LP non-zero entries: (.+)",
+        type=int,
+    )
+
+    parser.add_pattern(
+        "mip_starts_used",
+        r"^(\d+) of \d+ MIP starts provided solutions.",
+        type=int,
+    )
+
+    parser.add_bottom_up_pattern(
+        "num_warm_starts",
+        r"\] Warm starts: (.+)",
+        type=int,
+    )
+
+    parser.add_bottom_up_pattern(
+        "num_cold_starts",
+        r"\] Cold starts: (.+)",
+        type=int,
+    )
+
+    parser.add_bottom_up_pattern(
+        "num_tried_possible_repairs",
+        r"\] Attempted repairs: (.+)",
+        type=int,
+    )
+
     parser.parse()
 
 
