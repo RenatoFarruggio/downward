@@ -35,6 +35,16 @@ class CplexTwoPhaseSolverInterface : public SolverInterface {
     */
     int num_unsatisfiable_constraints;
     int num_unsatisfiable_temp_constraints;
+    
+    /*
+      We use these values to count how many times warm starts were applied,
+      and in how many cases of them, only a repairable solution was retained.
+      For completeness, we also count the cold starts, that is, the instances
+      where no warm_start was used.
+    */
+    int num_warm_starts;
+    int num_cold_starts;
+    int num_tried_possible_repairs;
 
     /*
       Matrix data in CPLEX format for loading a new problem. Matrix entries are
@@ -212,6 +222,10 @@ public:
     virtual void set_variable_lower_bound(int index, double bound) override;
     virtual void set_variable_upper_bound(int index, double bound) override;
     virtual void set_mip_gap(double gap) override;
+    virtual int get_num_warm_starts() const;
+    virtual int get_num_cold_starts() const;
+    virtual int get_num_tried_possible_repairs() const;
+    virtual void parse_mip_start_statistics(const std::string &tmp_cplex_filename);
     virtual void solve() override;
     virtual void solve_with_statistics() override;
     virtual void write_lp(const std::string &filename) const override;

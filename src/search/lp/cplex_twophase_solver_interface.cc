@@ -11,6 +11,11 @@
 #include <cstring>
 #include <numeric>
 
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <cstdio>
+
 using namespace std;
 
 namespace lp {
@@ -240,7 +245,8 @@ CplexTwoPhaseSolverInterface::CplexTwoPhaseSolverInterface()
     : env(nullptr), problem(nullptr), 
       save_presolved_problem_to_file_and_exit(false), is_mip(false),
       num_permanent_constraints(0), num_unsatisfiable_constraints(0),
-      num_unsatisfiable_temp_constraints(0) {
+      num_unsatisfiable_temp_constraints(0),
+      num_warm_starts(0), num_cold_starts(0), num_tried_possible_repairs(0) {
     int status = 0;
     env = CPXopenCPLEX(&status);
     if (status) {
@@ -476,6 +482,81 @@ void CplexTwoPhaseSolverInterface::set_mip_gap(double gap) {
     CPX_CALL(CPXsetdblparam, env, CPXPARAM_MIP_Tolerances_MIPGap, gap);
 }
 
+int CplexTwoPhaseSolverInterface::get_num_warm_starts() const {
+    return num_warm_starts;
+}
+
+int CplexTwoPhaseSolverInterface::get_num_cold_starts() const {
+    return num_cold_starts;
+}
+
+int CplexTwoPhaseSolverInterface::get_num_tried_possible_repairs() const {
+    return num_tried_possible_repairs;
+}
+
+void CplexTwoPhaseSolverInterface::parse_mip_start_statistics(const std::string &tmp_cplex_filename) {
+    //cout << endl << "TEST START" << endl;
+    string search_string_warm_start = "MIP starts provided solutions.";
+    string search_string_retained_valued = "Retaining values of one MIP start for possible repair.";
+    ifstream file(tmp_cplex_filename);
+
+    bool retained_values_for_possible_repair = false;
+    bool warm_start_used = false;
+
+    if (file.is_open()) {
+        std::string line;
+
+        while (getline(file, line)) {
+            // Output the line to the console
+            //cout << line << endl;
+
+            // Check if the line contains the search string
+            if (line.find(search_string_warm_start) != std::string::npos) {
+                // If it does, print the line to the console
+                //cout << line << endl;
+                //cout << line[0] << endl;
+                if (!line.empty() && line[0] != '0') {
+                    //cout << "is not 1" << endl;
+                    warm_start_used = true;
+                } else {
+                    //cout << "is 1" << endl;
+                }
+            }
+
+            if (line.find(search_string_retained_valued) != std::string::npos) {
+                // If it does, print the line to the console
+                //cout << line << endl;
+                retained_values_for_possible_repair = true;
+            }
+        }
+
+        file.close();
+        
+        if (remove(tmp_cplex_filename.c_str()) != 0) {
+            cerr << "Error deleting the file." << endl;
+        }
+    } else {
+        cerr << "Unable to open the file." << endl;
+    }
+
+    if (warm_start_used) {
+        //cout << "Warm start used" << endl;
+        num_warm_starts++;
+    } else {
+        //cout << "Cold start used" << endl;
+        num_cold_starts++;
+    }
+
+    if (retained_values_for_possible_repair) {
+        //cout << "Retained values for possible repair" << endl;
+        num_tried_possible_repairs++;
+    } else {
+        //cout << "No values needed to be repaired" << endl;
+    }
+
+    //cout << "TEST END" << endl << endl;
+}
+
 void CplexTwoPhaseSolverInterface::solve() {
 
 //    if (is_mip) {
@@ -486,10 +567,29 @@ void CplexTwoPhaseSolverInterface::solve() {
 //        cout << "MIP detected: 0" << endl;
 //    }
 
+    std::string tmp_cplex_filename = "tmp_cplex.log";
+
     if (is_trivially_unsolvable()) {
         return;
     } else if (is_mip) {
+        //cout << "SOLVING MIP" << endl;
+        //cout << "TEST NUMSOLNS BEFORE: " << CPXgetnummipstarts (env, problem) << endl;
+        // TODO: Figure out how to mip starts off
+        //cout << "TEST TURNING ON DEBUGGING AND START SOLVE" << endl;
+        
+        //CPX_CALL(CPXsetintparam, env, CPXPARAM_ScreenOutput, CPX_ON);
+        CPX_CALL(CPXsetlogfilename, env, tmp_cplex_filename.c_str(), "w");
+
         CPX_CALL(CPXmipopt, env, problem);
+
+        parse_mip_start_statistics(tmp_cplex_filename); // THIS TAKES A LOT OF TIME AND SHOULD NOT BE USED IN PRODUCTION!!!
+
+        //CPX_CALL(CPXsetintparam, env, CPXPARAM_ScreenOutput, CPX_OFF);
+        
+        //cout << "TEST TURNING DEBUGGING OFF AFTER SOLVE" << endl;
+
+        //cout << "TEST NUMSOLNS AFTER: " << CPXgetnummipstarts (env, problem) << endl;
+        //cout << "TEST END" << endl;
     } else {
         CPX_CALL(CPXlpopt, env, problem);
     }
@@ -630,6 +730,9 @@ bool CplexTwoPhaseSolverInterface::has_temporary_constraints() const {
 }
 
 void CplexTwoPhaseSolverInterface::print_statistics() const {
+    utils::g_log << "Warm starts: " << get_num_warm_starts() << endl;
+    utils::g_log << "Cold starts: " << get_num_cold_starts() << endl;
+    utils::g_log << "Attempted repairs: " << get_num_tried_possible_repairs() << endl;
     utils::g_log << "LP variables: " << get_num_variables() << endl;
     utils::g_log << "LP constraints: " << get_num_constraints() << endl;
     utils::g_log << "LP non-zero entries: " << CPXgetnumnz(env, problem) << endl;
