@@ -66,7 +66,7 @@ class CplexTwoPhaseSolverInterface : public SolverInterface {
           corresponding entry.
 
           For example, say entries are stored column-by-column, and there are
-          4 non-zero entries in columns 0 and 1. If column 2 now as a 4.5 in
+          4 non-zero entries in columns 0 and 1. If column 2 now has a 4.5 in
           row 1 and a 7.2 in row 5, then
              coefficients[4] = 4.5, indices[4] = 1
              coefficients[5] = 7.2, indices[5] = 5.
