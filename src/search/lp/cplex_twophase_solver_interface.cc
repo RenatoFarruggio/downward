@@ -538,13 +538,16 @@ void CplexTwoPhaseSolverInterface::parse_mip_start_statistics(const std::string 
 }
 
 void CplexTwoPhaseSolverInterface::solve() {
-    std::string tmp_cplex_filename = "tmp_cplex.log";
+    // Uncomment the 3 outcommented lines when counting warm starts / MIP starts
+    // Also uncomment the 3 lines in print_statistics()!!!
+    
+    //std::string tmp_cplex_filename = "tmp_cplex.log";
     if (is_trivially_unsolvable()) {
         return;
     } else if (is_mip) {
-        CPX_CALL(CPXsetlogfilename, env, tmp_cplex_filename.c_str(), "w");
+        //CPX_CALL(CPXsetlogfilename, env, tmp_cplex_filename.c_str(), "w");
         CPX_CALL(CPXmipopt, env, problem);
-        parse_mip_start_statistics(tmp_cplex_filename); // THIS TAKES A LOT OF TIME AND SHOULD NOT BE USED IN PRODUCTION!!!
+        //parse_mip_start_statistics(tmp_cplex_filename); // THIS TAKES A LOT OF TIME AND SHOULD NOT BE USED IN PRODUCTION!!!
     } else {
         CPX_CALL(CPXlpopt, env, problem);
     }
@@ -685,9 +688,9 @@ bool CplexTwoPhaseSolverInterface::has_temporary_constraints() const {
 }
 
 void CplexTwoPhaseSolverInterface::print_statistics() const {
-    utils::g_log << "Warm starts: " << get_num_warm_starts() << endl;
-    utils::g_log << "Cold starts: " << get_num_cold_starts() << endl;
-    utils::g_log << "Attempted repairs: " << get_num_tried_possible_repairs() << endl;
+    //utils::g_log << "Warm starts: " << get_num_warm_starts() << endl;
+    //utils::g_log << "Cold starts: " << get_num_cold_starts() << endl;
+    //utils::g_log << "Attempted repairs: " << get_num_tried_possible_repairs() << endl;
     utils::g_log << "LP variables: " << get_num_variables() << endl;
     utils::g_log << "LP constraints: " << get_num_constraints() << endl;
     utils::g_log << "LP non-zero entries: " << CPXgetnumnz(env, problem) << endl;
