@@ -497,7 +497,7 @@ void CplexTwoPhaseSolverInterface::update_tightening_constraints() const {
 void CplexTwoPhaseSolverInterface::solve() {
 
     static int counter = 0;
-    write_lp("problem_" + to_string(counter) + ".lp");
+    //write_lp("problem_" + to_string(counter) + ".lp");
 
     if (is_trivially_unsolvable()) {
         return;
