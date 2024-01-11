@@ -17,6 +17,7 @@ class CplexTwoPhaseSolverInterface : public SolverInterface {
     bool save_presolved_problem_to_file_and_exit;
     bool is_mip;
     int num_permanent_constraints;
+    int twophase_phase;
 
     /*
       Our public interface allows using constraints of the form
@@ -225,7 +226,8 @@ public:
     virtual int get_num_warm_starts() const;
     virtual int get_num_cold_starts() const;
     virtual int get_num_tried_possible_repairs() const;
-    virtual void parse_mip_start_statistics(const std::string &tmp_cplex_filename);
+    virtual void update_relaxing_constraints() const;
+    virtual void update_tightening_constraints() const;
     virtual void solve() override;
     virtual void solve_with_statistics() override;
     virtual void write_lp(const std::string &filename) const override;

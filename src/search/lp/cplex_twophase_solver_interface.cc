@@ -244,7 +244,7 @@ void CplexTwoPhaseSolverInterface::CplexRowsInfo::assign(const named_vector::Nam
 CplexTwoPhaseSolverInterface::CplexTwoPhaseSolverInterface()
     : env(nullptr), problem(nullptr), 
       save_presolved_problem_to_file_and_exit(false), is_mip(false),
-      num_permanent_constraints(0), num_unsatisfiable_constraints(0),
+      num_permanent_constraints(0), twophase_phase(0), num_unsatisfiable_constraints(0),
       num_unsatisfiable_temp_constraints(0),
       num_warm_starts(0), num_cold_starts(0), num_tried_possible_repairs(0) {
     int status = 0;
@@ -307,31 +307,10 @@ void CplexTwoPhaseSolverInterface::load_problem(const LinearProgram &lp) {
     problem = createProblem(env, "");
 
     const named_vector::NamedVector<LPVariable> &variables = lp.get_variables();
-
-//    named_vector::NamedVector<LPVariable> &variables = lp.get_variables();
-//
-//    LPVariable newIntegerVariable(1, 1, 1, true);
-//
-//    variables.push_back(newIntegerVariable);
-//
-//    cout << endl;
-//    cout << "Debugging output:" << endl;
-//    int counter = 0;
-//    cout << endl;
-//    for (const LPVariable &variable : variables) {
-//        cout << counter++ << endl;
-//        cout << "Is integer: " << variable.is_integer << endl;
-//        cout << "objective_coefficient: " << variable.objective_coefficient << endl;
-//        cout << endl;
-//    }
-//    cout << "Exiting for testing..." << endl;
-//    exit(0);
     
-    //is_mip = any_of(variables.begin(), variables.end(), [](const LPVariable &v) {
-    //                    return v.is_integer;
-    //                });
-
-    is_mip = true;
+    is_mip = any_of(variables.begin(), variables.end(), [](const LPVariable &v) {
+                        return v.is_integer;
+                    });
 
     const named_vector::NamedVector<LPConstraint> &constraints = lp.get_constraints();
     num_permanent_constraints = constraints.size();
@@ -461,10 +440,21 @@ void CplexTwoPhaseSolverInterface::set_objective_coefficient(int index, double c
 }
 
 void CplexTwoPhaseSolverInterface::set_constraint_lower_bound(int index, double bound) {
+    double current_lb = constraint_lower_bounds[index];
+
+    if (current_lb == bound) { // TODO: Remove this, it is redundant
+        //cout << "Not updating lb from " << current_lb << " to " << bound << endl;
+        return;
+    }
+    cout << "Updating lower bound from " << current_lb << " to " << bound << " at index " << index+1 << endl;
     change_constraint_bounds(index, bound, constraint_upper_bounds[index]);
 }
 
 void CplexTwoPhaseSolverInterface::set_constraint_upper_bound(int index, double bound) {
+    double current_ub = constraint_upper_bounds[index];
+    if (current_ub != bound) {
+        cout << "Updating upper bound from " << current_ub << " to " << bound << " at index " << index+1 << endl;
+    }
     change_constraint_bounds(index, constraint_lower_bounds[index], bound);
 }
 
@@ -494,63 +484,41 @@ int CplexTwoPhaseSolverInterface::get_num_tried_possible_repairs() const {
     return num_tried_possible_repairs;
 }
 
-// Maybe this does not belong here, but in a helpers class
-void CplexTwoPhaseSolverInterface::parse_mip_start_statistics(const std::string &tmp_cplex_filename) {
-    string search_string_warm_start = "MIP starts provided solutions.";
-    string search_string_retained_valued = "Retaining values of one MIP start for possible repair.";
-    ifstream file(tmp_cplex_filename);
+void CplexTwoPhaseSolverInterface::update_relaxing_constraints() const {
+    cout << "TODO: Implement update_relaxing_constraints" << endl;
+    return;
+}
 
-    bool retained_values_for_possible_repair = false;
-    bool warm_start_used = false;
-
-    if (file.is_open()) {
-        std::string line;
-        while (getline(file, line)) {
-            if (line.find(search_string_warm_start) != std::string::npos) {
-                if (!line.empty() && line[0] != '0') {
-                    warm_start_used = true;
-                }
-            }
-
-            if (line.find(search_string_retained_valued) != std::string::npos) {
-                retained_values_for_possible_repair = true;
-            }
-        }
-
-        file.close();
-        
-        if (remove(tmp_cplex_filename.c_str()) != 0) {
-            cerr << "Error deleting file " << tmp_cplex_filename << endl;
-        }
-    } else {
-        cerr << "Unable to open file " << tmp_cplex_filename << endl;
-    }
-
-    if (warm_start_used) {
-        num_warm_starts++;
-    } else {
-        num_cold_starts++;
-    }
-
-    if (retained_values_for_possible_repair) {
-        num_tried_possible_repairs++;
-    }
+void CplexTwoPhaseSolverInterface::update_tightening_constraints() const {
+    cout << "TODO: Implement update_tightening_constraints" << endl;
+    return;
 }
 
 void CplexTwoPhaseSolverInterface::solve() {
-    // Uncomment the 3 outcommented lines when counting warm starts / MIP starts
-    // Also uncomment the 3 lines in print_statistics()!!!
-    
-    //std::string tmp_cplex_filename = "tmp_cplex.log";
+
+    static int counter = 0;
+    write_lp("problem_" + to_string(counter) + ".lp");
+
     if (is_trivially_unsolvable()) {
         return;
     } else if (is_mip) {
-        //CPX_CALL(CPXsetlogfilename, env, tmp_cplex_filename.c_str(), "w");
+        cout << "MIP found, but LP expected!" << endl;
+        exit(1);
+
+        cout << "NOW SOLVING MIP" << endl;
         CPX_CALL(CPXmipopt, env, problem);
-        //parse_mip_start_statistics(tmp_cplex_filename); // THIS TAKES A LOT OF TIME AND SHOULD NOT BE USED IN PRODUCTION!!!
     } else {
+
         CPX_CALL(CPXlpopt, env, problem);
+        cout << "Optimization in step " << counter << " took " << CPXgetitcnt (env, problem) << " iterations" << endl;
+        
     }
+
+    counter++;
+    if (counter >= 2) {
+        exit(0);
+    }
+
 }
 
 void CplexTwoPhaseSolverInterface::solve_with_statistics() {
@@ -688,9 +656,6 @@ bool CplexTwoPhaseSolverInterface::has_temporary_constraints() const {
 }
 
 void CplexTwoPhaseSolverInterface::print_statistics() const {
-    //utils::g_log << "Warm starts: " << get_num_warm_starts() << endl;
-    //utils::g_log << "Cold starts: " << get_num_cold_starts() << endl;
-    //utils::g_log << "Attempted repairs: " << get_num_tried_possible_repairs() << endl;
     utils::g_log << "LP variables: " << get_num_variables() << endl;
     utils::g_log << "LP constraints: " << get_num_constraints() << endl;
     utils::g_log << "LP non-zero entries: " << CPXgetnumnz(env, problem) << endl;
@@ -740,7 +705,6 @@ void CplexTwoPhaseSolverInterface::set_use_warm_starts(bool use_warm_starts) {
     //CPXINT value = use_warm_starts? CPX_ON : CPX_OFF;
     if (use_warm_starts) {
         cout << "Using warm starts is turned on" << endl;
-        cout << "[TODO] Warm starting LPs are not yet implemented! (this message comes from cplex_solver_interface.cc)" << endl;
     } else {
         cout << "Using warm starts is turned off" << endl;
     }
