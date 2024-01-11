@@ -149,6 +149,12 @@ def main():
         type=int,
     )
 
+    parser.add_pattern(
+        "iterations_second_step",
+        r"Optimization in step 1 took (.+) iterations",
+        type=int,
+    )
+
     parser.parse()
 
 
