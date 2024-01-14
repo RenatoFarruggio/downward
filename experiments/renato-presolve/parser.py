@@ -150,7 +150,12 @@ def main():
     )
 
     parser.add_pattern(
-        "iterations_second_step",
+        "iterations_for_problem_0",
+        r"Optimization in step 0 took (.+) iterations",
+        type=int,
+    )
+    parser.add_pattern(
+        "iterations_for_problem_1",
         r"Optimization in step 1 took (.+) iterations",
         type=int,
     )

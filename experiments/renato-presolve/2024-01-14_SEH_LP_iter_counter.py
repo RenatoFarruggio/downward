@@ -66,6 +66,7 @@ ATTRIBUTES = [
     "lp_variables",
     "lp_constraints",
     "lp_nonzero_entries",
+    "iterations_for_problem_0",
     "iterations_for_problem_1",
     project.EVALUATIONS_PER_TIME,
     project.SPARSITY,
@@ -138,12 +139,26 @@ def remove_failed_runs(run):
         return error_type == "success"
     return run
 
+def remove_trivial_runs_initial(run):
+    iterations_0 = run.get("iterations_for_problem_0")
+    if iterations_0 is not None:
+        return iterations_0 > 0
+    return run
+
+def remove_trivial_runs_after_first_step(run):
+    iterations_1 = run.get("iterations_for_problem_1")
+    if iterations_1 is not None:
+        return iterations_1 > 0
+    return run
+
 project.add_absolute_report(
     exp,
     attributes=ATTRIBUTES, 
     #filter=[add_total_time_minus_search_time, project.add_evaluations_per_time], 
     #filter=[remove_short_running_lps, add_total_time_minus_search_time, project.add_evaluations_per_time], 
-    filter=[project.add_variables_per_constraint,
+    filter=[remove_trivial_runs_initial,
+            remove_trivial_runs_after_first_step,
+            project.add_variables_per_constraint,
             project.add_sparsity,
             project.add_evaluations_per_time]
 )
