@@ -62,6 +62,12 @@ def main():
         type=float,
     )
 
+    parser.add_pattern(
+        "presolve_ticks",
+        r"Presolve time = .+ sec. \((.+) ticks\)",
+        type=float,
+    )
+
     # "Actual search time"
     # Actual search time: 0.00147077s
     parser.add_pattern(
@@ -157,6 +163,12 @@ def main():
     parser.add_pattern(
         "iterations_for_problem_1",
         r"Optimization in step 1 took (.+) iterations",
+        type=int,
+    )
+
+    parser.add_pattern(
+        "expansions_until_last_jump",
+        r"] Expanded until last jump: (.+) state(s).",
         type=int,
     )
 
