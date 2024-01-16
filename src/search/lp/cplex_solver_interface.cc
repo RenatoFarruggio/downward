@@ -239,7 +239,10 @@ void CplexSolverInterface::CplexRowsInfo::assign(const named_vector::NamedVector
 CplexSolverInterface::CplexSolverInterface()
     : env(nullptr), problem(nullptr), 
       save_presolved_problem_to_file_and_exit(false), is_mip(false),
-      num_permanent_constraints(0), num_unsatisfiable_constraints(0),
+      num_permanent_constraints(0), 
+      start_time(0), end_time(0),
+      ticks_sum(0), iterations_sum_phase_1(0), iterations_sum_total(0),
+      num_unsatisfiable_constraints(0),
       num_unsatisfiable_temp_constraints(0) {
     int status = 0;
     env = CPXopenCPLEX(&status);
@@ -460,7 +463,13 @@ void CplexSolverInterface::solve() {
     } else if (is_mip) {
         CPX_CALL(CPXmipopt, env, problem);
     } else {
+        CPX_CALL(CPXgetdettime, env, &start_time);
         CPX_CALL(CPXlpopt, env, problem);
+        CPX_CALL(CPXgetdettime, env, &end_time);
+
+        iterations_sum_phase_1 += CPXgetphase1cnt(env, problem);
+        iterations_sum_total += CPXgetitcnt(env, problem);
+        ticks_sum += (end_time - start_time);
     }
 }
 
@@ -602,6 +611,10 @@ void CplexSolverInterface::print_statistics() const {
     utils::g_log << "LP variables: " << get_num_variables() << endl;
     utils::g_log << "LP constraints: " << get_num_constraints() << endl;
     utils::g_log << "LP non-zero entries: " << CPXgetnumnz(env, problem) << endl;
+
+    utils::g_log << "LP solve ticks: " << ticks_sum << endl;
+    utils::g_log << "LP solve iterations total: " << iterations_sum_total << endl;
+    utils::g_log << "LP solve iterations in phase 1: " << iterations_sum_phase_1 << endl;
 }
 
 void CplexSolverInterface::set_use_presolve(bool use_presolve) {

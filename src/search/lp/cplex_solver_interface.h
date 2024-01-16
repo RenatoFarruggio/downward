@@ -18,6 +18,13 @@ class CplexSolverInterface : public SolverInterface {
     bool is_mip;
     int num_permanent_constraints;
 
+    double start_time;
+    double end_time;
+
+    double ticks_sum;
+    int iterations_sum_phase_1;
+    int iterations_sum_total;
+
     /*
       Our public interface allows using constraints of the form
         LB <= expression <= UB
