@@ -168,7 +168,29 @@ def main():
 
     parser.add_pattern(
         "expansions_until_last_jump",
-        r"] Expanded until last jump: (.+) state(s).",
+        r"\] Expanded until last jump: (.+) state(s).",
+        type=int,
+    )
+
+# [t=0.00783696s, 46512 KB] LP solve ticks: 0.0175238
+#[t=0.00783696s, 46512 KB] LP solve iterations total: 3
+#[t=0.00783696s, 46512 KB] LP solve iterations in phase 1: 2
+
+    parser.add_bottom_up_pattern(
+        "lp_solve_ticks",
+        r"\] LP solve ticks: (.+)",
+        type=float,
+    )
+
+    parser.add_bottom_up_pattern(
+        "iterations_total",
+        r"\] LP solve iterations total: (.+)",
+        type=int,
+    )
+
+    parser.add_bottom_up_pattern(
+        "iterations_phase_1",
+        r"\] LP solve iterations in phase 1: (.+)",
         type=int,
     )
 
