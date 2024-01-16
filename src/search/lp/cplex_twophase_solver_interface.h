@@ -10,6 +10,9 @@
 
 #include <cplex.h>
 
+#include <vector>
+#include <tuple>
+
 namespace lp {
 class CplexTwoPhaseSolverInterface : public SolverInterface {
     CPXENVptr env;
@@ -18,6 +21,15 @@ class CplexTwoPhaseSolverInterface : public SolverInterface {
     bool is_mip;
     int num_permanent_constraints;
     int twophase_phase;
+    bool init_phase;
+    std::vector<std::tuple<int, double>> retained_lower_constraint_updates;
+    
+    double start_time;
+    double end_time;
+
+    double ticks_sum;
+    int iterations_sum_phase_1;
+    int iterations_sum_total;
 
     /*
       Our public interface allows using constraints of the form
@@ -226,8 +238,7 @@ public:
     virtual int get_num_warm_starts() const;
     virtual int get_num_cold_starts() const;
     virtual int get_num_tried_possible_repairs() const;
-    virtual void update_relaxing_constraints() const;
-    virtual void update_tightening_constraints() const;
+    virtual void update_tightening_constraints();
     virtual void solve() override;
     virtual void solve_with_statistics() override;
     virtual void write_lp(const std::string &filename) const override;

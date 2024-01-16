@@ -244,7 +244,10 @@ void CplexTwoPhaseSolverInterface::CplexRowsInfo::assign(const named_vector::Nam
 CplexTwoPhaseSolverInterface::CplexTwoPhaseSolverInterface()
     : env(nullptr), problem(nullptr), 
       save_presolved_problem_to_file_and_exit(false), is_mip(false),
-      num_permanent_constraints(0), twophase_phase(0), num_unsatisfiable_constraints(0),
+      num_permanent_constraints(0), twophase_phase(0), init_phase(true),
+      start_time(0), end_time(0),
+      ticks_sum(0), iterations_sum_phase_1(0), iterations_sum_total(0),
+      num_unsatisfiable_constraints(0),
       num_unsatisfiable_temp_constraints(0),
       num_warm_starts(0), num_cold_starts(0), num_tried_possible_repairs(0) {
     int status = 0;
@@ -268,6 +271,10 @@ CplexTwoPhaseSolverInterface::~CplexTwoPhaseSolverInterface() {
 }
 
 bool CplexTwoPhaseSolverInterface::is_trivially_unsolvable() const {
+    if (twophase_phase) {  // Don't check while in second twophase phase
+        return false;
+    }
+
     return num_unsatisfiable_constraints + num_unsatisfiable_temp_constraints > 0;
 }
 
@@ -307,7 +314,7 @@ void CplexTwoPhaseSolverInterface::load_problem(const LinearProgram &lp) {
     problem = createProblem(env, "");
 
     const named_vector::NamedVector<LPVariable> &variables = lp.get_variables();
-    
+
     is_mip = any_of(variables.begin(), variables.end(), [](const LPVariable &v) {
                         return v.is_integer;
                     });
@@ -413,6 +420,7 @@ void CplexTwoPhaseSolverInterface::add_temporary_constraints(
 }
 
 void CplexTwoPhaseSolverInterface::clear_temporary_constraints() {
+    // TODO: Adapt to twophase warm start
     int start = num_permanent_constraints;
     int end = get_num_constraints() - 1;
     if (start <= end) {
@@ -436,39 +444,54 @@ void CplexTwoPhaseSolverInterface::set_objective_coefficients(const vector<doubl
 }
 
 void CplexTwoPhaseSolverInterface::set_objective_coefficient(int index, double coefficient) {
+//    cout << "TODO: Implement " << "set_objective_coefficient" << endl;
     CPX_CALL(CPXchgobj, env, problem, 1, &index, &coefficient);
 }
 
 void CplexTwoPhaseSolverInterface::set_constraint_lower_bound(int index, double bound) {
     double current_lb = constraint_lower_bounds[index];
 
-    if (current_lb == bound) { // TODO: Remove this, it is redundant
-        //cout << "Not updating lb from " << current_lb << " to " << bound << endl;
+    if (!init_phase) {
+        if (current_lb < bound) {  // Tightening
+            //cout << "Saving retained lower constraint at index " << index+1
+            //    << " from " << current_lb << " to " << bound << endl;
+            std::tuple<int, double> constraint_to_retain = std::make_tuple(index, bound);
+            retained_lower_constraint_updates.push_back(constraint_to_retain);
+            return;
+        }
+    }
+
+
+    if (current_lb == bound) {
         return;
     }
-    cout << "Updating lower bound from " << current_lb << " to " << bound << " at index " << index+1 << endl;
+//    cout << "Updating lower bound from " << current_lb << " to " << bound << " at index " << index+1 << endl;
     change_constraint_bounds(index, bound, constraint_upper_bounds[index]);
 }
 
 void CplexTwoPhaseSolverInterface::set_constraint_upper_bound(int index, double bound) {
-    double current_ub = constraint_upper_bounds[index];
-    if (current_ub != bound) {
-        cout << "Updating upper bound from " << current_ub << " to " << bound << " at index " << index+1 << endl;
-    }
+    // TODO: Implement twophase here
+//    double current_ub = constraint_upper_bounds[index];
+//    if (current_ub != bound) {
+//        cout << "Updating upper bound from " << current_ub << " to " << bound << " at index " << index+1 << endl;
+//    }
     change_constraint_bounds(index, constraint_lower_bounds[index], bound);
 }
 
 void CplexTwoPhaseSolverInterface::set_variable_lower_bound(int index, double bound) {
+    // TODO: Implement twophase here
     static const char bound_type = 'L';
     CPX_CALL(CPXchgbds, env, problem, 1, &index, &bound_type, &bound);
 }
 
 void CplexTwoPhaseSolverInterface::set_variable_upper_bound(int index, double bound) {
+    // TODO: Implement twophase here
     static const char bound_type = 'U';
     CPX_CALL(CPXchgbds, env, problem, 1, &index, &bound_type, &bound);
 }
 
 void CplexTwoPhaseSolverInterface::set_mip_gap(double gap) {
+    // TODO: Implement twophase here
     CPX_CALL(CPXsetdblparam, env, CPXPARAM_MIP_Tolerances_MIPGap, gap);
 }
 
@@ -484,20 +507,24 @@ int CplexTwoPhaseSolverInterface::get_num_tried_possible_repairs() const {
     return num_tried_possible_repairs;
 }
 
-void CplexTwoPhaseSolverInterface::update_relaxing_constraints() const {
-    cout << "TODO: Implement update_relaxing_constraints" << endl;
-    return;
-}
+void CplexTwoPhaseSolverInterface::update_tightening_constraints() {
+    for (const auto& constraint : retained_lower_constraint_updates) {
+        int index = std::get<0>(constraint);
+        double bound = std::get<1>(constraint);
 
-void CplexTwoPhaseSolverInterface::update_tightening_constraints() const {
-    cout << "TODO: Implement update_tightening_constraints" << endl;
-    return;
+//        cout << "Updating retained lower bound from " << constraint_lower_bounds[index]
+//            << " to " << bound << " at index " << index+1 << endl;
+        change_constraint_bounds(index, bound, constraint_upper_bounds[index]);
+    }
+    retained_lower_constraint_updates.clear();
 }
 
 void CplexTwoPhaseSolverInterface::solve() {
-
-    static int counter = 0;
-    //write_lp("problem_" + to_string(counter) + ".lp");
+    
+//    static int counter = 0;
+//    cout << "Counter at " << counter << endl;
+//    cout << "Saving current problem as p" << counter << ".lp" << endl;
+//    write_lp("p" + to_string(counter) + ".lp");
 
     if (is_trivially_unsolvable()) {
         return;
@@ -508,17 +535,51 @@ void CplexTwoPhaseSolverInterface::solve() {
         cout << "NOW SOLVING MIP" << endl;
         CPX_CALL(CPXmipopt, env, problem);
     } else {
+        //cout << "TEST START" << endl;
 
-        CPX_CALL(CPXlpopt, env, problem);
-        cout << "Optimization in step " << counter << " took " << CPXgetitcnt (env, problem) << " iterations" << endl;
+        //CPX_CALL(CPXsetintparam, env, CPXPARAM_ScreenOutput, CPX_ON);
+//        cout << "Solving using Primal Simplex" << endl;
+        CPX_CALL(CPXgetdettime, env, &start_time);
+        CPX_CALL(CPXprimopt, env, problem);
+        CPX_CALL(CPXgetdettime, env, &end_time);
         
+//        cout << "Primal Simplex in step " << counter << " took " << CPXgetphase1cnt(env, problem) << " iterations in phase 1" << endl;
+//        cout << "Primal Simplex in step " << counter << " took " << CPXgetitcnt(env, problem) << " iterations in total" << endl;
+//        cout << "Primal Simplex in step " << counter << " took " << end_time - start_time << " ticks" << endl;
+//        cout << endl;
+
+        iterations_sum_phase_1 += CPXgetphase1cnt(env, problem);
+        iterations_sum_total += CPXgetitcnt(env, problem);
+        ticks_sum += (end_time - start_time);
+
+        twophase_phase = 1;
+
+//        cout << "Updating tightening constraints" << endl;
+        update_tightening_constraints();
+
+//        cout << "Solving using Dual Simplex" << endl;
+        CPX_CALL(CPXgetdettime, env, &start_time);
+        CPX_CALL(CPXdualopt, env, problem);
+        CPX_CALL(CPXgetdettime, env, &end_time);
+
+        iterations_sum_phase_1 += CPXgetphase1cnt(env, problem);
+        iterations_sum_total += CPXgetitcnt(env, problem);
+        ticks_sum += (end_time - start_time);
+
+        twophase_phase = 0;
+
+//        cout << "Dual Simplex in step " << counter << " took " << CPXgetphase1cnt(env, problem) << " iterations in phase 1" << endl;
+//        cout << "Dual Simplex in step " << counter << " took " << CPXgetitcnt(env, problem) << " iterations in total" << endl;
+//        cout << "Dual Simplex in step " << counter << " took " << end_time - start_time << " ticks" << endl;
+        //cout << "TEST END" << endl;
     }
 
-    counter++;
-    if (counter >= 2) {
-        exit(0);
-    }
+//    counter++;
+//    if (counter >= 2) {
+//        //exit(0);
+//    }
 
+    init_phase = false;
 }
 
 void CplexTwoPhaseSolverInterface::solve_with_statistics() {
@@ -530,6 +591,11 @@ void CplexTwoPhaseSolverInterface::solve_with_statistics() {
 }
 
 void CplexTwoPhaseSolverInterface::write_lp(const string &filename) const {
+    if (twophase_phase) {
+        cout << "NOT WRITING LP, since it is in a too relaxed state in twophase warm start. Would not be a representative LP!" << endl;
+        return;
+    }
+
     if (is_trivially_unsolvable()) {
         cerr << "The LP has trivially unsatisfiable constraints that are not "
              << "accurately represented in CPLEX. Writing it to a file would "
@@ -542,6 +608,7 @@ void CplexTwoPhaseSolverInterface::write_lp(const string &filename) const {
 }
 
 void CplexTwoPhaseSolverInterface::print_failure_analysis() const {
+    cout << "Solver is in twophase phase: " << twophase_phase << endl;
     if (is_trivially_unsolvable()) {
         cout << "LP/MIP is infeasible because of a trivially unsatisfiable "
              << "constraint" << endl;
@@ -578,6 +645,10 @@ void CplexTwoPhaseSolverInterface::print_failure_analysis() const {
 }
 
 bool CplexTwoPhaseSolverInterface::is_infeasible() const {
+    if (twophase_phase) {  // Don't check while in second twophase phase
+        return false;
+    }
+
     if (is_trivially_unsolvable()) {
         return true;
     }
@@ -586,6 +657,10 @@ bool CplexTwoPhaseSolverInterface::is_infeasible() const {
 }
 
 bool CplexTwoPhaseSolverInterface::is_unbounded() const {
+    if (twophase_phase) {  // Don't check while in second twophase phase
+        return false;
+    }
+
     if (is_trivially_unsolvable()) {
         return false;
     }
@@ -594,6 +669,10 @@ bool CplexTwoPhaseSolverInterface::is_unbounded() const {
 }
 
 bool CplexTwoPhaseSolverInterface::has_optimal_solution() const {
+    if (twophase_phase) {  // Don't check while in second twophase phase
+        return false;
+    }
+
     if (is_trivially_unsolvable()) {
         return false;
     }
@@ -652,6 +731,7 @@ int CplexTwoPhaseSolverInterface::get_num_constraints() const {
 }
 
 bool CplexTwoPhaseSolverInterface::has_temporary_constraints() const {
+    // TODO: Adapt to twophase here
     return num_permanent_constraints < get_num_constraints();
 }
 
@@ -659,6 +739,10 @@ void CplexTwoPhaseSolverInterface::print_statistics() const {
     utils::g_log << "LP variables: " << get_num_variables() << endl;
     utils::g_log << "LP constraints: " << get_num_constraints() << endl;
     utils::g_log << "LP non-zero entries: " << CPXgetnumnz(env, problem) << endl;
+    
+    utils::g_log << "LP solve ticks: " << ticks_sum << endl;
+    utils::g_log << "LP solve iterations total: " << iterations_sum_total << endl;
+    utils::g_log << "LP solve iterations in phase 1: " << iterations_sum_phase_1 << endl;
 }
 
 void CplexTwoPhaseSolverInterface::set_use_presolve(bool use_presolve) {
@@ -708,6 +792,9 @@ void CplexTwoPhaseSolverInterface::set_use_warm_starts(bool use_warm_starts) {
     } else {
         cout << "Using warm starts is turned off" << endl;
     }
+        cout << "[TODO] This option is not in use. You can ignore the message, "
+            << "as turning warm starts on or off does not change anything in the"
+            << " code. Here, twophase warm starts are always used." << endl;
 }
 
 }
