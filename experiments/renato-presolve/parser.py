@@ -172,14 +172,16 @@ def main():
         type=int,
     )
 
-# [t=0.00783696s, 46512 KB] LP solve ticks: 0.0175238
-#[t=0.00783696s, 46512 KB] LP solve iterations total: 3
-#[t=0.00783696s, 46512 KB] LP solve iterations in phase 1: 2
+    parser.add_bottom_up_pattern(
+        "iterations_phase_1",
+        r"\] LP solve phase 1 iterations: (.+)",
+        type=int,
+    )
 
     parser.add_bottom_up_pattern(
-        "lp_solve_ticks",
-        r"\] LP solve ticks: (.+)",
-        type=float,
+        "iterations_phase_2",
+        r"\] LP solve phase 2 iterations: (.+)",
+        type=int,
     )
 
     parser.add_bottom_up_pattern(
@@ -189,11 +191,34 @@ def main():
     )
 
     parser.add_bottom_up_pattern(
-        "iterations_phase_1",
-        r"\] LP solve iterations in phase 1: (.+)",
+        "lp_solve_ticks",
+        r"\] LP solve ticks: (.+)",
+        type=float,
+    )
+
+    parser.add_bottom_up_pattern(
+        "initial_iterations_phase_1",
+        r"\] First LP solve phase 1 iterations: (.+)",
         type=int,
     )
 
+    parser.add_bottom_up_pattern(
+        "initial_iterations_phase_2",
+        r"\] First LP solve phase 2 iterations: (.+)",
+        type=int,
+    )
+
+    parser.add_bottom_up_pattern(
+        "initial_iterations_total",
+        r"\] First LP solve iterations total: (.+)",
+        type=int,
+    )
+
+    parser.add_bottom_up_pattern(
+        "initial_lp_solve_ticks",
+        r"\] First LP solve ticks: (.+)",
+        type=float,
+    )
     parser.parse()
 
 
