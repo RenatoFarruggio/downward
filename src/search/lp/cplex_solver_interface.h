@@ -25,6 +25,8 @@ class CplexSolverInterface : public SolverInterface {
     int iterations_sum_phase_1;
     int iterations_sum_total;
 
+    bool init_phase;
+
     /*
       Our public interface allows using constraints of the form
         LB <= expression <= UB

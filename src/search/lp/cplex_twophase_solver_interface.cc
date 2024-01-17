@@ -520,11 +520,14 @@ void CplexTwoPhaseSolverInterface::update_tightening_constraints() {
 }
 
 void CplexTwoPhaseSolverInterface::solve() {
-    
 //    static int counter = 0;
 //    cout << "Counter at " << counter << endl;
-//    cout << "Saving current problem as p" << counter << ".lp" << endl;
-//    write_lp("p" + to_string(counter) + ".lp");
+    
+
+//    if (counter < 2) {
+//        cout << "Saving current problem as p2" << counter << ".lp" << endl;
+//        write_lp("p" + to_string(counter) + ".lp");
+//    }
 
     if (is_trivially_unsolvable()) {
         return;
@@ -539,6 +542,43 @@ void CplexTwoPhaseSolverInterface::solve() {
 
         //CPX_CALL(CPXsetintparam, env, CPXPARAM_ScreenOutput, CPX_ON);
 //        cout << "Solving using Primal Simplex" << endl;
+        if (init_phase) {
+            CPX_CALL(CPXgetdettime, env, &start_time);
+            CPX_CALL(CPXlpopt, env, problem);
+            CPX_CALL(CPXgetdettime, env, &end_time);
+            
+//            int method_used = CPXgetmethod(env, problem);
+//            if (method_used == 1) {
+//                cout << "Using Primal Simplex" << endl;
+//            } else if (method_used == 2) {
+//                cout << "Using Dual Simplex" << endl;
+//            } else {
+//                cout << "Using method " << method_used << endl;
+//            }
+//            cout << "Simplex in step " << counter << " took " << CPXgetphase1cnt(env, problem) << " iterations in phase 1" << endl;
+//            cout << "Simplex in step " << counter << " took " << CPXgetitcnt(env, problem) << " iterations in total" << endl;
+//            cout << "Simplex in step " << counter << " took " << end_time - start_time << " ticks" << endl;
+//            cout << endl;
+
+            int iterations_phase_1 = CPXgetphase1cnt(env, problem);
+            int iterations_total = CPXgetitcnt(env, problem);
+            double delta_time = end_time - start_time;
+
+            if (init_phase) {
+                utils::g_log << "First LP solve phase 1 iterations: " << iterations_phase_1 << endl;
+                utils::g_log << "First LP solve phase 2 iterations: " << iterations_total - iterations_phase_1 << endl;
+                utils::g_log << "First LP solve iterations total: " << iterations_total << endl;
+                utils::g_log << "First LP solve ticks: " << delta_time << endl;
+            } else {
+                iterations_sum_phase_1 += iterations_phase_1;
+                iterations_sum_total += iterations_total;
+                ticks_sum += delta_time;
+            }
+//            counter++;
+            init_phase = false;
+            return;
+        }
+
         CPX_CALL(CPXgetdettime, env, &start_time);
         CPX_CALL(CPXprimopt, env, problem);
         CPX_CALL(CPXgetdettime, env, &end_time);
@@ -579,7 +619,7 @@ void CplexTwoPhaseSolverInterface::solve() {
 //        //exit(0);
 //    }
 
-    init_phase = false;
+//    init_phase = false;
 }
 
 void CplexTwoPhaseSolverInterface::solve_with_statistics() {
@@ -740,9 +780,12 @@ void CplexTwoPhaseSolverInterface::print_statistics() const {
     utils::g_log << "LP constraints: " << get_num_constraints() << endl;
     utils::g_log << "LP non-zero entries: " << CPXgetnumnz(env, problem) << endl;
     
-    utils::g_log << "LP solve ticks: " << ticks_sum << endl;
-    utils::g_log << "LP solve iterations total: " << iterations_sum_total << endl;
-    utils::g_log << "LP solve iterations in phase 1: " << iterations_sum_phase_1 << endl;
+    if (!init_phase) {
+        utils::g_log << "LP solve phase 1 iterations: " << iterations_sum_phase_1 << endl;
+        utils::g_log << "LP solve phase 2 iterations: " << iterations_sum_total - iterations_sum_phase_1 << endl;
+        utils::g_log << "LP solve iterations total: " << iterations_sum_total << endl;
+        utils::g_log << "LP solve ticks: " << ticks_sum << endl;
+    }
 }
 
 void CplexTwoPhaseSolverInterface::set_use_presolve(bool use_presolve) {
