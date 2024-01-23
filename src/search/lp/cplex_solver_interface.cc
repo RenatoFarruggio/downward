@@ -472,15 +472,15 @@ void CplexSolverInterface::solve() {
     } else if (is_mip) {
         CPX_CALL(CPXmipopt, env, problem);
     } else {
-        CPX_CALL(CPXgetdettime, env, &start_time);
-        CPX_CALL(CPXlpopt, env, problem);
-        CPX_CALL(CPXgetdettime, env, &end_time);
-
-        int iterations_phase_1 = CPXgetphase1cnt(env, problem);
-        int iterations_total = CPXgetitcnt(env, problem);
-        double delta_time = (end_time - start_time);
-
         if (init_phase) {
+            CPX_CALL(CPXgetdettime, env, &start_time);
+            CPX_CALL(CPXlpopt, env, problem);
+            CPX_CALL(CPXgetdettime, env, &end_time);
+
+            int iterations_phase_1 = CPXgetphase1cnt(env, problem);
+            int iterations_total = CPXgetitcnt(env, problem);
+            double delta_time = (end_time - start_time);
+
             utils::g_log << "First LP solve phase 1 iterations: " << iterations_phase_1 << endl;
             utils::g_log << "First LP solve phase 2 iterations: " << iterations_total - iterations_phase_1 << endl;
             utils::g_log << "First LP solve iterations total: " << iterations_total << endl;
@@ -488,6 +488,15 @@ void CplexSolverInterface::solve() {
             init_phase = false;
             return;
         }
+
+        CPX_CALL(CPXgetdettime, env, &start_time);
+        CPX_CALL(cpx_lp_solve_method, env, problem);
+        CPX_CALL(CPXgetdettime, env, &end_time);
+
+        int iterations_phase_1 = CPXgetphase1cnt(env, problem);
+        int iterations_total = CPXgetitcnt(env, problem);
+        double delta_time = (end_time - start_time);
+
 
         iterations_sum_phase_1 += iterations_phase_1;
         iterations_sum_total += iterations_total;
@@ -704,6 +713,35 @@ void CplexSolverInterface::set_use_warm_starts(bool use_warm_starts) {
     } else {
         cout << "Using warm starts is turned off" << endl;
     }
+}
+
+void CplexSolverInterface::lp_solve_method(int method_id) {
+    // These ids are consistent (except for network simplex and concurrent) with the CPLEX ids at:
+    //  https://www.ibm.com/docs/en/icos/22.1.1?topic=parameters-algorithm-continuous-linear-problems
+
+
+    cout << "Preferred method for solving LPs: ";
+    if (method_id == 0) {
+        cpx_lp_solve_method = CPXlpopt;
+        cout << "None: Let CPLEX choose";
+    } else if (method_id == 1) {
+        cpx_lp_solve_method = CPXprimopt;
+        cout << "Primal simplex";
+    } else if (method_id == 2) {
+        cpx_lp_solve_method = CPXdualopt;
+        cout << "Dual simplex";
+    } else if (method_id == 4) {
+        cpx_lp_solve_method = CPXbaropt;
+        cout << "Barrier optimizer";
+    } else if (method_id == 5) {
+        cpx_lp_solve_method = CPXsiftopt;
+        cout << "Sifting";
+    } else {
+        cout << "WARNING: Admissible ids for lp_solve_method are 0 (auto), 1 (primal simplex), 2 (dual simplex), 4 (barrier), 5 (sifting)." << endl;
+        cerr << "Unknown method name (" << method_id << ") provided for solving LPs!" << endl;
+        exit(-1);
+    }
+    cout << endl;
 }
 
 }

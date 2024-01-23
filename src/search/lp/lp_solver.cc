@@ -263,6 +263,10 @@ void LPSolver::set_use_warm_starts(const bool use_warm_starts) {
     pimpl->set_use_warm_starts(use_warm_starts);
 }
 
+void LPSolver::lp_solve_method(const int lp_solve_method_id) {
+    pimpl->lp_solve_method(lp_solve_method_id);
+}
+
 vector<double> LPSolver::extract_solution() const {
     return pimpl->extract_solution();
 }

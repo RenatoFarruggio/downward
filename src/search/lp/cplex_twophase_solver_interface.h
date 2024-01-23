@@ -258,6 +258,7 @@ public:
     virtual void set_save_presolved_lp(bool save_presolved_lp) override;
     virtual void save_presolved_problem_to_file(std::string filename) override;
     virtual void set_use_warm_starts(bool use_warm_starts) override;
+    virtual void lp_solve_method(int lp_solve_method_id) override;
 };
 }
 #endif

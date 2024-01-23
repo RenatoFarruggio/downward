@@ -22,6 +22,7 @@ OperatorCountingHeuristic::OperatorCountingHeuristic(const plugins::Options &opt
       folding_level(opts.get<int>("folding_level")),
       save_presolved_lp(opts.get<bool>("save_presolved_lp")),
       use_warm_starts(opts.get<bool>("use_warm_starts")),
+      lp_solve_method_id(opts.get<int>("lp_solve_method")),
       is_first(true) {
     lp_solver.set_mip_gap(0);
     named_vector::NamedVector<lp::LPVariable> variables;
@@ -39,6 +40,7 @@ OperatorCountingHeuristic::OperatorCountingHeuristic(const plugins::Options &opt
     lp_solver.set_folding_level(folding_level);
     lp_solver.set_save_presolved_lp(save_presolved_lp);
     lp_solver.set_use_warm_starts(use_warm_starts);
+    lp_solver.lp_solve_method(lp_solve_method_id);
     lp_solver.load_problem(lp);
 
 }
@@ -157,6 +159,13 @@ public:
             "constraints are added, and this new LP is solved using "
             "the dual simplex algorithm.",
             "false");
+
+        add_option<int>(
+            "lp_solve_method",
+            "determine which method the LP solver should use to solve the "
+            "LPs given when using standard CPLEX (not twophase).",
+            "0"
+        );
 
         lp::add_lp_solver_option_to_feature(*this);
         Heuristic::add_options_to_feature(*this);

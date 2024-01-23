@@ -840,5 +840,9 @@ void CplexTwoPhaseSolverInterface::set_use_warm_starts(bool use_warm_starts) {
             << " code. Here, twophase warm starts are always used." << endl;
 }
 
+void CplexTwoPhaseSolverInterface::lp_solve_method(int lp_solve_method_id) {
+    cout << "WARNING: lp_solve_method (set to " << lp_solve_method_id << ") is an invalid option for CPLEX Twophase!" << endl;
+}
+
 }
 #endif

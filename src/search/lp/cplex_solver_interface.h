@@ -27,6 +27,8 @@ class CplexSolverInterface : public SolverInterface {
 
     bool init_phase;
 
+    int (*cpx_lp_solve_method)(CPXCENVptr, CPXLPptr);
+
     /*
       Our public interface allows using constraints of the form
         LB <= expression <= UB
@@ -240,6 +242,7 @@ public:
     virtual void set_save_presolved_lp(bool save_presolved_lp) override;
     virtual void save_presolved_problem_to_file(std::string filename) override;
     virtual void set_use_warm_starts(bool use_warm_starts) override;
+    virtual void lp_solve_method(int method_id) override;
 };
 }
 #endif

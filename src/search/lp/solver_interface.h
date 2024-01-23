@@ -44,6 +44,7 @@ public:
     virtual void set_save_presolved_lp(bool save_presolved_lp) = 0;
     virtual void save_presolved_problem_to_file(std::string filename) = 0;
     virtual void set_use_warm_starts(bool use_warm_starts) = 0;
+    virtual void lp_solve_method(int lp_solve_method_id) = 0;
 
     /*
       Return true if the solving the LP showed that it is bounded feasible and
