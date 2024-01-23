@@ -219,6 +219,32 @@ def main():
         r"\] First LP solve ticks: (.+)",
         type=float,
     )
+
+
+    parser.add_bottom_up_pattern(
+        "phase_1_zero_iterations_count",
+        r"LP solve phase 1 zero iterations count: (.+)",
+        type=int,
+    )
+
+    parser.add_bottom_up_pattern(
+        "phase_1_nonzero_iterations_count",
+        r"LP solve phase 1 nonzero iterations count: (.+)",
+        type=int,
+    )
+
+    parser.add_bottom_up_pattern(
+        "total_zero_iterations_count",
+        r"LP solve total zero iterations count: (.+)",
+        type=int,
+    )
+
+    parser.add_bottom_up_pattern(
+        "total_nonzero_iterations_count",
+        r"LP solve total nonzero iterations count: (.+)",
+        type=int,
+    )
+
     parser.parse()
 
 

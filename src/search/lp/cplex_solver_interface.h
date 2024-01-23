@@ -25,6 +25,11 @@ class CplexSolverInterface : public SolverInterface {
     int iterations_sum_phase_1;
     int iterations_sum_total;
 
+    int no_iterations_counter_phase_1;
+    int non_zero_iterations_counter_phase_1;
+    int no_iterations_counter_total;
+    int non_zero_iterations_counter_total;
+
     bool init_phase;
 
     int (*cpx_lp_solve_method)(CPXCENVptr, CPXLPptr);

@@ -242,6 +242,8 @@ CplexSolverInterface::CplexSolverInterface()
       num_permanent_constraints(0), 
       start_time(0), end_time(0),
       ticks_sum(0), iterations_sum_phase_1(0), iterations_sum_total(0),
+      no_iterations_counter_phase_1(0), non_zero_iterations_counter_phase_1(0),
+      no_iterations_counter_total(0), non_zero_iterations_counter_total(0),
       init_phase(true),
       num_unsatisfiable_constraints(0),
       num_unsatisfiable_temp_constraints(0) {
@@ -502,6 +504,18 @@ void CplexSolverInterface::solve() {
         iterations_sum_total += iterations_total;
         ticks_sum += delta_time;
 
+        if (iterations_phase_1 == 0) {
+            no_iterations_counter_phase_1++;
+        } else {
+            non_zero_iterations_counter_phase_1++;
+        } 
+
+        if (iterations_total == 0) {
+            no_iterations_counter_total++;
+        } else {
+            non_zero_iterations_counter_total++;
+        }
+        
 //        int method_used = CPXgetmethod(env, problem);
 //        if (method_used == 1) {
 //            cout << "Using Primal Simplex" << endl;
@@ -662,6 +676,11 @@ void CplexSolverInterface::print_statistics() const {
         utils::g_log << "LP solve phase 2 iterations: " << iterations_sum_total - iterations_sum_phase_1 << endl;
         utils::g_log << "LP solve iterations total: " << iterations_sum_total << endl;
         utils::g_log << "LP solve ticks: " << ticks_sum << endl;
+        
+        utils::g_log << "LP solve phase 1 zero iterations count: " << no_iterations_counter_phase_1 << endl;
+        utils::g_log << "LP solve phase 1 nonzero iterations count: " << non_zero_iterations_counter_phase_1 << endl;
+        utils::g_log << "LP solve total zero iterations count: " << no_iterations_counter_total << endl;
+        utils::g_log << "LP solve total nonzero iterations count: " << non_zero_iterations_counter_total << endl;
     }
 }
 
