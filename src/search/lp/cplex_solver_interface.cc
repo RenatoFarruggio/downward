@@ -676,7 +676,7 @@ void CplexSolverInterface::print_statistics() const {
         utils::g_log << "LP solve phase 2 iterations: " << iterations_sum_total - iterations_sum_phase_1 << endl;
         utils::g_log << "LP solve iterations total: " << iterations_sum_total << endl;
         utils::g_log << "LP solve ticks: " << ticks_sum << endl;
-        
+
         utils::g_log << "LP solve phase 1 zero iterations count: " << no_iterations_counter_phase_1 << endl;
         utils::g_log << "LP solve phase 1 nonzero iterations count: " << non_zero_iterations_counter_phase_1 << endl;
         utils::g_log << "LP solve total zero iterations count: " << no_iterations_counter_total << endl;
@@ -735,7 +735,7 @@ void CplexSolverInterface::set_use_warm_starts(bool use_warm_starts) {
 }
 
 void CplexSolverInterface::lp_solve_method(int method_id) {
-    // These ids are consistent (except for network simplex and concurrent) with the CPLEX ids at:
+    // These ids are consistent (but not including network simplex and concurrent) with the CPLEX ids at:
     //  https://www.ibm.com/docs/en/icos/22.1.1?topic=parameters-algorithm-continuous-linear-problems
 
 
