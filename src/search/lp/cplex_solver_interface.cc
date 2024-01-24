@@ -245,6 +245,7 @@ CplexSolverInterface::CplexSolverInterface()
       no_iterations_counter_phase_1(0), non_zero_iterations_counter_phase_1(0),
       no_iterations_counter_total(0), non_zero_iterations_counter_total(0),
       init_phase(true),
+      cpx_lp_solve_method(CPXlpopt),
       num_unsatisfiable_constraints(0),
       num_unsatisfiable_temp_constraints(0) {
     int status = 0;
