@@ -118,6 +118,7 @@ void DiversePotentialHeuristics::cover_samples(
     if (log.is_at_least_normal()) {
         log << "Time for covering samples: " << covering_timer << endl;
     }
+    optimizer.print_statistics();
 }
 
 vector<unique_ptr<PotentialFunction>>
@@ -142,6 +143,11 @@ DiversePotentialHeuristics::find_functions() {
     }
 
     return move(diverse_functions);
+}
+
+void DiversePotentialHeuristics::print_statistics() {
+    log << "LP statistics for diverse potential heuristics:" << endl;
+    optimizer.print_statistics();
 }
 
 class DiversePotentialMaxHeuristicFeature : public plugins::TypedFeature<Evaluator, PotentialMaxHeuristic> {

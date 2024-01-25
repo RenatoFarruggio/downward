@@ -59,6 +59,7 @@ public:
 
     // Sample states, then cover them.
     std::vector<std::unique_ptr<PotentialFunction>> find_functions();
+    void print_statistics();
 };
 }
 #endif

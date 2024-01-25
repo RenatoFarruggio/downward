@@ -29,6 +29,9 @@ static unique_ptr<PotentialFunction> create_potential_function(
     default:
         ABORT("Unkown optimization function");
     }
+
+    optimizer.print_statistics();
+
     return optimizer.get_potential_function();
 }
 

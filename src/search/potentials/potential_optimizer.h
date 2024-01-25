@@ -69,6 +69,8 @@ public:
     void optimize_for_samples(const std::vector<State> &samples);
 
     bool has_optimal_solution() const;
+    
+    void print_statistics() const;
 
     std::unique_ptr<PotentialFunction> get_potential_function() const;
 };

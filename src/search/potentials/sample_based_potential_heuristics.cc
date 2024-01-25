@@ -49,6 +49,9 @@ static vector<unique_ptr<PotentialFunction>> create_sample_based_potential_funct
         optimize_for_samples(optimizer, opts.get<int>("num_samples"), *rng);
         functions.push_back(optimizer.get_potential_function());
     }
+
+    optimizer.print_statistics();
+
     return functions;
 }
 

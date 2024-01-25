@@ -211,6 +211,11 @@ void PotentialOptimizer::extract_lp_solution() {
     }
 }
 
+void PotentialOptimizer::print_statistics() const {
+    utils::g_log << "LP statistics for potential optimizer:" << endl;
+    lp_solver.print_statistics();
+}
+
 unique_ptr<PotentialFunction> PotentialOptimizer::get_potential_function() const {
     assert(has_optimal_solution());
     return utils::make_unique_ptr<PotentialFunction>(fact_potentials);
