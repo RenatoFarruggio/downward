@@ -31,6 +31,8 @@ public:
     virtual double cost_sharing_h_value(
         const LandmarkStatusManager &lm_status_manager,
         const State &ancestor_state) = 0;
+
+    virtual void print_statistics() const {};
 };
 
 class LandmarkUniformSharedCostAssignment : public LandmarkCostAssignment {
@@ -68,6 +70,8 @@ public:
     virtual double cost_sharing_h_value(
         const LandmarkStatusManager &lm_status_manager,
         const State &ancestor_state) override;
+
+    virtual void print_statistics() const override;
 };
 }
 

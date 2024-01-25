@@ -80,6 +80,11 @@ bool LandmarkCostPartitioningHeuristic::dead_ends_are_reliable() const {
     return true;
 }
 
+void LandmarkCostPartitioningHeuristic::print_statistics() const {
+    utils::g_log << "LP statistics for optimal cost partitioning heuristic:" << endl;
+    lm_cost_assignment->print_statistics();
+}
+
 class LandmarkCostPartitioningHeuristicFeature : public plugins::TypedFeature<Evaluator, LandmarkCostPartitioningHeuristic> {
 public:
     LandmarkCostPartitioningHeuristicFeature() : TypedFeature("landmark_cost_partitioning") {

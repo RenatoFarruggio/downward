@@ -248,4 +248,8 @@ double LandmarkEfficientOptimalSharedCostAssignment::cost_sharing_h_value(
 
     return h;
 }
+
+void LandmarkEfficientOptimalSharedCostAssignment::print_statistics() const {
+    lp_solver.print_statistics();
+}
 }

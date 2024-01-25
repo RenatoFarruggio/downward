@@ -23,6 +23,8 @@ public:
     explicit LandmarkCostPartitioningHeuristic(const plugins::Options &opts);
 
     virtual bool dead_ends_are_reliable() const override;
+
+    virtual void print_statistics() const;
 };
 }
 
