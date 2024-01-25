@@ -51,7 +51,8 @@ void LandmarkCostPartitioningHeuristic::set_cost_assignment(
         lm_cost_assignment =
             utils::make_unique_ptr<LandmarkEfficientOptimalSharedCostAssignment>(
                 task_properties::get_operator_costs(task_proxy),
-                *lm_graph, opts.get<lp::LPSolverType>("lpsolver"));
+                *lm_graph, opts.get<lp::LPSolverType>("lpsolver"),
+                opts.get<int>("lp_solve_method"));
     } else if (cost_partitioning_strategy == CostPartitioningStrategy::UNIFORM) {
         lm_cost_assignment =
             utils::make_unique_ptr<LandmarkUniformSharedCostAssignment>(
@@ -112,6 +113,10 @@ public:
             "strategy for partitioning operator costs among landmarks",
             "uniform");
         add_option<bool>("alm", "use action landmarks", "true");
+        add_option<int>("lp_solve_method",
+            "determine which method the LP solver should use to solve the "
+            "LPs given when using standard CPLEX (not twophase).",
+            "0");
         lp::add_lp_solver_option_to_feature(*this);
 
         document_note(
