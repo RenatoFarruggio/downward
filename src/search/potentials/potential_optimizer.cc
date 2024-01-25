@@ -27,6 +27,7 @@ PotentialOptimizer::PotentialOptimizer(const plugins::Options &opts)
       num_lp_vars(0),
       is_first(true) {
     lp_solver.set_use_presolve(opts.get<bool>("use_presolve"));
+    lp_solver.lp_solve_method(opts.get<int>("lp_solve_method"));
     task_properties::verify_no_axioms(task_proxy);
     task_properties::verify_no_conditional_effects(task_proxy);
     initialize();

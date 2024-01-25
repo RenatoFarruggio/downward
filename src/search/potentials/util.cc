@@ -64,10 +64,17 @@ void prepare_parser_for_admissible_potentials(plugins::Feature &feature) {
         plugins::Bounds("0.0", "infinity"));
     
     feature.add_option<bool>(
-    "use_presolve",
-    "turn presolving on or off. Using presolve creates an overhead "
-    "so turning presolve off might decrease runtime.",
-    "true");
+        "use_presolve",
+        "turn presolving on or off. Using presolve creates an overhead "
+        "so turning presolve off might decrease runtime.",
+        "true");
+
+    feature.add_option<int>(
+        "lp_solve_method",
+        "determine which method the LP solver should use to solve the "
+        "LPs given when using standard CPLEX (not twophase).",
+        "0"
+    );
 
     lp::add_lp_solver_option_to_feature(feature);
     Heuristic::add_options_to_feature(feature);
