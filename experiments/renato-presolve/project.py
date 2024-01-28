@@ -319,11 +319,8 @@ def add_lp_count(run):
 def add_average_iterations_after_initial(run):
     iterations_total = run.get("iterations_total")
     lp_count = run.get("lp_count")
-    if iterations_total is not None and lp_count is not None:
-        if lp_count > 0:
-            run["average_iterations_after_initial"] = iterations_total/lp_count
-        else:
-            run["average_iterations_after_initial"] = 0
+    if iterations_total is not None and lp_count is not None and lp_count > 0:
+        run["average_iterations_after_initial"] = iterations_total/lp_count
     return run
 
 def add_average_iterations_after_initial_per_initial_iterations(run):
