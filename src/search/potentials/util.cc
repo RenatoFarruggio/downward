@@ -76,6 +76,13 @@ void prepare_parser_for_admissible_potentials(plugins::Feature &feature) {
         "0"
     );
 
+    feature.add_option<bool>(
+        "crossover",
+        "when set to false, turns off crossover when using the barrier optimizer. "
+        "Crossover finds a basis, which is costly, but required for a warm start. "
+        "Because of the warm start, it is turned on by default.",
+        "true");
+
     lp::add_lp_solver_option_to_feature(feature);
     Heuristic::add_options_to_feature(feature);
 }
