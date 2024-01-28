@@ -126,6 +126,7 @@ public:
     bool is_unbounded() const;
 
     void set_use_presolve(const bool use_presolve);
+    void set_crossover(const bool use_crossover);
     void set_symmetry_breaking(const int symmetry_breaking_level);
     void set_folding_level(const int folding_level);
     void set_save_presolved_lp(const bool save_presolved_lp);

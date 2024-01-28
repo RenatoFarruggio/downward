@@ -701,6 +701,16 @@ void CplexSolverInterface::set_symmetry_breaking(int symmetry_breaking_level) {
     CPX_CALL(CPXsetintparam, env, CPXPARAM_Preprocessing_Symmetry, value);
 }
 
+void CplexSolverInterface::set_crossover(bool use_crossover) {
+    if (use_crossover) {
+        CPX_CALL(CPXsetintparam, env, CPXPARAM_SolutionType, CPX_AUTO_SOLN);
+        cout << "Crossover enabled" << endl;
+    } else {
+        CPX_CALL(CPXsetintparam, env, CPXPARAM_SolutionType, CPX_NONBASIC_SOLN);
+        cout << "Crossover disabled" << endl;
+    }
+}
+
 void CplexSolverInterface::set_folding_level(int folding_level) {
     cout << "Folding level is set to " << folding_level << endl;
     CPXINT value = folding_level;

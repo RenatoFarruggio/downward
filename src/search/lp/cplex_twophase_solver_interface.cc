@@ -844,5 +844,15 @@ void CplexTwoPhaseSolverInterface::lp_solve_method(int lp_solve_method_id) {
     cout << "WARNING: lp_solve_method (set to " << lp_solve_method_id << ") is an invalid option for CPLEX Twophase!" << endl;
 }
 
+void CplexTwoPhaseSolverInterface::set_crossover(bool use_crossover) {
+    if (use_crossover) {
+        CPX_CALL(CPXsetintparam, env, CPXPARAM_SolutionType, CPX_AUTO_SOLN);
+        cout << "Crossover enabled" << endl;
+    } else {
+        CPX_CALL(CPXsetintparam, env, CPXPARAM_SolutionType, CPX_NONBASIC_SOLN);
+        cout << "Crossover disabled" << endl;
+    }
+}
+
 }
 #endif

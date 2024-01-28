@@ -243,6 +243,10 @@ void LPSolver::set_use_presolve(const bool use_presolve) {
     pimpl->set_use_presolve(use_presolve);
 }
 
+void LPSolver::set_crossover(const bool use_crossover) {
+    pimpl->set_crossover(use_crossover);
+}
+
 void LPSolver::set_symmetry_breaking(const int symmetry_breaking_level) {
     pimpl->set_symmetry_breaking(symmetry_breaking_level);
 }

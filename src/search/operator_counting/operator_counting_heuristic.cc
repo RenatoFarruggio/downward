@@ -18,6 +18,7 @@ OperatorCountingHeuristic::OperatorCountingHeuristic(const plugins::Options &opt
       lp_solver(opts.get<lp::LPSolverType>("lpsolver")),
       use_integer_operator_counts(opts.get<bool>("use_integer_operator_counts")),
       use_presolve(opts.get<bool>("use_presolve")),
+      use_crossover(opts.get<bool>("crossover")),
       symmetry_breaking_level(opts.get<int>("symmetry_breaking_level")),
       folding_level(opts.get<int>("folding_level")),
       save_presolved_lp(opts.get<bool>("save_presolved_lp")),
@@ -36,6 +37,7 @@ OperatorCountingHeuristic::OperatorCountingHeuristic(const plugins::Options &opt
         generator->initialize_constraints(task, lp);
     }
     lp_solver.set_use_presolve(use_presolve);
+    lp_solver.set_crossover(use_crossover);
     lp_solver.set_symmetry_breaking(symmetry_breaking_level);
     lp_solver.set_folding_level(folding_level);
     lp_solver.set_save_presolved_lp(save_presolved_lp);
@@ -121,6 +123,13 @@ public:
             "use_presolve",
             "turn presolving on or off. Using presolve creates an overhead "
             "so turning presolve off might decrease runtime.",
+            "true");
+
+        add_option<bool>(
+            "crossover",
+            "when set to false, turns off crossover when using the barrier optimizer. "
+            "Crossover finds a basis, which is costly, but required for a warm start. "
+            "Because of the warm start, it is turned on by default.",
             "true");
 
         add_option<int>(

@@ -39,6 +39,7 @@ public:
     virtual bool is_unbounded() const = 0;
 
     virtual void set_use_presolve(bool use_presolve) = 0;
+    virtual void set_crossover(bool use_crossover) = 0;
     virtual void set_symmetry_breaking(int symmetry_breaking_level) = 0;
     virtual void set_folding_level(int folding_level) = 0;
     virtual void set_save_presolved_lp(bool save_presolved_lp) = 0;
