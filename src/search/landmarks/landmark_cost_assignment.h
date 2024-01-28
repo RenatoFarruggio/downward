@@ -65,7 +65,8 @@ public:
         const std::vector<int> &operator_costs,
         const LandmarkGraph &graph,
         lp::LPSolverType solver_type,
-        int lp_solver_method_id);
+        int lp_solver_method_id,
+        bool use_presolve);
 
     virtual double cost_sharing_h_value(
         const LandmarkStatusManager &lm_status_manager,
