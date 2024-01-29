@@ -702,6 +702,8 @@ void CplexSolverInterface::set_symmetry_breaking(int symmetry_breaking_level) {
 }
 
 void CplexSolverInterface::set_crossover(bool use_crossover) {
+    // See 
+    // https://www.ibm.com/docs/en/icos/22.1.1?topic=parameters-solution-type-lp-qp
     if (use_crossover) {
         CPX_CALL(CPXsetintparam, env, CPXPARAM_SolutionType, CPX_AUTO_SOLN);
         cout << "Crossover enabled" << endl;
