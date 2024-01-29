@@ -85,10 +85,10 @@ ATTRIBUTES = ["error",
     "total_nonzero_iterations_count",
     "lp_count",
     "average_iterations_after_initial",
+    "total_time",
     project.EVALUATIONS_PER_TIME,
     project.SPARSITY,
     project.AVERAGE_ITERATIONS_AFTER_INITIAL_PER_INITIAL_ITERATIONS
-    
 ]
 
 exp = project.FastDownwardExperiment(environment=ENV, revision_cache=REVISION_CACHE)
@@ -241,7 +241,8 @@ for i in range(int(len(CONFIGS)/2)):
                     "iterations_total",
                     "lp_solve_ticks",
                     "lp_solve_time_sum",
-                    "phase_1_zero_iterations_count"],
+                    "phase_1_zero_iterations_count",
+                    "total_time"],
         name_postfix=f"comp-{algo1[7:-18]}"
     )
 
