@@ -271,6 +271,10 @@ void LPSolver::lp_solve_method(const int lp_solve_method_id) {
     pimpl->lp_solve_method(lp_solve_method_id);
 }
 
+void LPSolver::set_solve_dual(const int solve_dual) {
+    pimpl->set_solve_dual(solve_dual);
+}
+
 vector<double> LPSolver::extract_solution() const {
     return pimpl->extract_solution();
 }

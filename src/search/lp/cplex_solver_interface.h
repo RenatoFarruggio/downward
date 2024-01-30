@@ -249,6 +249,7 @@ public:
     virtual void save_presolved_problem_to_file(std::string filename) override;
     virtual void set_use_warm_starts(bool use_warm_starts) override;
     virtual void lp_solve_method(int method_id) override;
+    virtual void set_solve_dual(int solve_dual) override;
 };
 }
 #endif

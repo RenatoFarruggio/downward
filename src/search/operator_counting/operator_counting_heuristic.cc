@@ -24,6 +24,7 @@ OperatorCountingHeuristic::OperatorCountingHeuristic(const plugins::Options &opt
       save_presolved_lp(opts.get<bool>("save_presolved_lp")),
       use_warm_starts(opts.get<bool>("use_warm_starts")),
       lp_solve_method_id(opts.get<int>("lp_solve_method")),
+      solve_dual(opts.get<int>("solve_dual")),
       is_first(true) {
     lp_solver.set_mip_gap(0);
     named_vector::NamedVector<lp::LPVariable> variables;
@@ -43,6 +44,7 @@ OperatorCountingHeuristic::OperatorCountingHeuristic(const plugins::Options &opt
     lp_solver.set_save_presolved_lp(save_presolved_lp);
     lp_solver.set_use_warm_starts(use_warm_starts);
     lp_solver.lp_solve_method(lp_solve_method_id);
+    lp_solver.set_solve_dual(solve_dual);
     lp_solver.load_problem(lp);
 
 }
@@ -173,6 +175,16 @@ public:
             "lp_solve_method",
             "determine which method the LP solver should use to solve the "
             "LPs given when using standard CPLEX (not twophase).",
+            "0"
+        );
+
+        add_option<int>(
+            "solve_dual",
+            "sets whether this the solver should solve the dual formulation "
+            "of the LP instead of the Primal LP. Per default this is set to "
+            "0 (automatic), which will usually solve the primal LP. Setting "
+            "it to 1 will turn it on, and setting it to -1 will turn it off "
+            "entirely.",
             "0"
         );
 

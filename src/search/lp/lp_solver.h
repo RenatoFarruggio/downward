@@ -133,6 +133,7 @@ public:
     void save_presolved_problem_to_file(const std::string filename);
     void set_use_warm_starts(const bool use_warm_starts);
     void lp_solve_method(const int lp_solve_method_id);
+    void set_solve_dual(const int solve_dual);
 
     /*
       Return true if the solving the LP showed that it is bounded feasible and
