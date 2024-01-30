@@ -82,6 +82,16 @@ void prepare_parser_for_admissible_potentials(plugins::Feature &feature) {
         "Crossover finds a basis, which is costly, but required for a warm start. "
         "Because of the warm start, it is turned on by default.",
         "true");
+    
+    feature.add_option<int>(
+        "solve_dual",
+        "sets whether this the solver should solve the dual formulation "
+        "of the LP instead of the Primal LP. Per default this is set to "
+        "0 (automatic), which will usually solve the primal LP. Setting "
+        "it to 1 will turn it on, and setting it to -1 will turn it off "
+        "entirely.",
+        "0"
+        );
 
     lp::add_lp_solver_option_to_feature(feature);
     Heuristic::add_options_to_feature(feature);
