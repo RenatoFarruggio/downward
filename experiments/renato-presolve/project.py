@@ -61,7 +61,7 @@ WARM_STARTS_PER_EVALUATIONS = Attribute(
 )
 
 VARIABLES_PER_CONSTRAINT = Attribute(
-    "variables_per_constraint", min_wins=False, function=arithmetic_mean, digits=1
+    "variables_per_constraint", min_wins=False, function=arithmetic_mean, digits=5
 )
 
 

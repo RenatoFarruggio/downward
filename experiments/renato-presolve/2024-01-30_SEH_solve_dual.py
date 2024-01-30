@@ -22,6 +22,10 @@ else:
              , "miconic:s1-0.pddl"
              , "miconic:s2-0.pddl"
              , "miconic:s5-0.pddl"
+             , "tidybot-opt11-strips:p01.pddl"
+             , "tidybot-opt11-strips:p02.pddl"
+             , "tidybot-opt11-strips:p03.pddl"
+             , "tidybot-opt11-strips:p04.pddl"
              #, "miconic:s20-0.pddl"
              #, "airport:p22-airport4halfMUC-p3.pddl"
     ]
@@ -85,6 +89,7 @@ ATTRIBUTES = ["error",
     "total_nonzero_iterations_count",
     "lp_count",
     "average_iterations_after_initial",
+    project.VARIABLES_PER_CONSTRAINT,
     project.EVALUATIONS_PER_TIME,
     project.SPARSITY,
     project.AVERAGE_ITERATIONS_AFTER_INITIAL_PER_INITIAL_ITERATIONS
@@ -245,7 +250,8 @@ for i in range(int(len(CONFIGS)/2)):
                     "phase_1_zero_iterations_count",
                     "total_zero_iterations_count",
                     "total_nonzero_iterations_count",
-                    "total_time"],
+                    "total_time",
+                    "variables_per_constraint"],
         name_postfix=f"comp-{algo1[7:]}-vs-{algo2[7:]}"
     )
 
