@@ -53,7 +53,8 @@ void LandmarkCostPartitioningHeuristic::set_cost_assignment(
                 task_properties::get_operator_costs(task_proxy),
                 *lm_graph, opts.get<lp::LPSolverType>("lpsolver"),
                 opts.get<int>("lp_solve_method"),
-                opts.get<bool>("crossover"));
+                opts.get<bool>("crossover"),
+                opts.get<int>("solve_dual"));
     } else if (cost_partitioning_strategy == CostPartitioningStrategy::UNIFORM) {
         lm_cost_assignment =
             utils::make_unique_ptr<LandmarkUniformSharedCostAssignment>(
@@ -129,6 +130,15 @@ public:
             "Crossover finds a basis, which is costly, but required for a warm start. "
             "Because of the warm start, it is turned on by default.",
             "true");
+        add_option<int>(
+            "solve_dual",
+            "sets whether this the solver should solve the dual formulation "
+            "of the LP instead of the Primal LP. Per default this is set to "
+            "0 (automatic), which will usually solve the primal LP. Setting "
+            "it to 1 will turn it on, and setting it to -1 will turn it off "
+            "entirely.",
+            "0"
+        );
         lp::add_lp_solver_option_to_feature(*this);
 
         document_note(

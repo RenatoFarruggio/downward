@@ -141,12 +141,13 @@ double LandmarkUniformSharedCostAssignment::cost_sharing_h_value(
 
 LandmarkEfficientOptimalSharedCostAssignment::LandmarkEfficientOptimalSharedCostAssignment(
     const vector<int> &operator_costs, const LandmarkGraph &graph,
-    lp::LPSolverType solver_type, int lp_solve_method_id, bool use_crossover)
+    lp::LPSolverType solver_type, int lp_solve_method_id, bool use_crossover, int solve_dual)
     : LandmarkCostAssignment(operator_costs, graph),
       lp_solver(solver_type),
       lp(build_initial_lp()) {
         lp_solver.lp_solve_method(lp_solve_method_id);
         lp_solver.set_crossover(use_crossover);
+        lp_solver.set_solve_dual(solve_dual);
 }
 
 lp::LinearProgram LandmarkEfficientOptimalSharedCostAssignment::build_initial_lp() {
