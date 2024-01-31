@@ -33,20 +33,20 @@ CONFIGS = [
     (f"config_SEH_barrier", ["--search", "astar(operatorcounting([state_equation_constraints()],lp_solve_method=4))"]),
     (f"config_SEH_auto", ["--search", "astar(operatorcounting([state_equation_constraints()],lp_solve_method=0))"]),
     
-#    (f"config_DEL_barrier", ["--search", "astar(operatorcounting([delete_relaxation_constraints()],lp_solve_method=4))"]),
-#    (f"config_DEL_auto", ["--search", "astar(operatorcounting([delete_relaxation_constraints()],lp_solve_method=0))"]),
-#    
-#    (f"config_OCP_barrier", ["--search", "astar(landmark_cost_partitioning(lm_rhw(),cost_partitioning=optimal,lp_solve_method=4))"]),
-#    (f"config_OCP_auto", ["--search", "astar(landmark_cost_partitioning(lm_rhw(),cost_partitioning=optimal,lp_solve_method=0))"]),
-#    
-#    (f"config_PHO_barrier", ["--search", "astar(operatorcounting([pho_constraints()],lp_solve_method=4))"]),
-#    (f"config_PHO_auto", ["--search", "astar(operatorcounting([pho_constraints()],lp_solve_method=0))"]),
-#    
-#    (f"config_IPOT_barrier", ["--search", "astar(initial_state_potential(use_presolve=false,lp_solve_method=4))"]),
-#    (f"config_IPOT_auto", ["--search", "astar(initial_state_potential(use_presolve=false,lp_solve_method=0))"]),
-#    
-#    (f"config_DPOT_barrier", ["--search", "astar(diverse_potentials(use_presolve=false,lp_solve_method=4))"]),
-#    (f"config_DPOT_auto", ["--search", "astar(diverse_potentials(use_presolve=false,lp_solve_method=0))"]),
+    (f"config_DEL_barrier", ["--search", "astar(operatorcounting([delete_relaxation_constraints()],lp_solve_method=4))"]),
+    (f"config_DEL_auto", ["--search", "astar(operatorcounting([delete_relaxation_constraints()],lp_solve_method=0))"]),
+    
+    (f"config_OCP_barrier", ["--search", "astar(landmark_cost_partitioning(lm_rhw(),cost_partitioning=optimal,lp_solve_method=4))"]),
+    (f"config_OCP_auto", ["--search", "astar(landmark_cost_partitioning(lm_rhw(),cost_partitioning=optimal,lp_solve_method=0))"]),
+    
+    (f"config_PHO_barrier", ["--search", "astar(operatorcounting([pho_constraints()],lp_solve_method=4))"]),
+    (f"config_PHO_auto", ["--search", "astar(operatorcounting([pho_constraints()],lp_solve_method=0))"]),
+    
+    (f"config_IPOT_barrier", ["--search", "astar(initial_state_potential(use_presolve=false,lp_solve_method=4))"]),
+    (f"config_IPOT_auto", ["--search", "astar(initial_state_potential(use_presolve=false,lp_solve_method=0))"]),
+    
+    (f"config_DPOT_barrier", ["--search", "astar(diverse_potentials(use_presolve=false,lp_solve_method=4))"]),
+    (f"config_DPOT_auto", ["--search", "astar(diverse_potentials(use_presolve=false,lp_solve_method=0))"]),
 ]
 
 BUILD_OPTIONS = []
