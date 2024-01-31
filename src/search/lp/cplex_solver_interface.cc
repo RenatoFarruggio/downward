@@ -636,15 +636,24 @@ bool CplexSolverInterface::has_optimal_solution() const {
         return false;
     /*
       The following status was returned in some cases, for example when
-      computing the State Equation Heuristic for 
+      computing the State Equation Heuristic using the Barrier method for 
       organic-synthesis-split-opt18-strips/p03.pddl
-      It mean that a solution is available, but not proved optimal, due 
+      It means that a solution is available, but not proved optimal, due 
       to numeric difficulties during optimization. Note that the solution 
       may not be feasible. For example, it may be only dual feasible.
       Returning true yields a negative heuristic value, so we return false.
       TODO: maybe change something to prevent this error
     */
     case CPX_STAT_NUM_BEST:
+        return false;
+    /*
+      The following status was returned in some cases, for example when
+      computing the State Equation Heuristic using the Barrier method for 
+      organic-synthesis-split-opt18-strips/p02.pddl
+      It means that the solver stopped due to a limit on the dual objective.
+      This is an indication that the primal is infeasible.
+    */
+    case CPX_STAT_ABORT_DUAL_OBJ_LIM:
         return false;
     default:
         cerr << "Unexpected status after solving LP/MIP: " << status << endl;
