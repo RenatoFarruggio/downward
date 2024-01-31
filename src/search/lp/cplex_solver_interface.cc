@@ -634,6 +634,18 @@ bool CplexSolverInterface::has_optimal_solution() const {
     case CPX_STAT_INFEASIBLE:
     case CPXMIP_INFEASIBLE:
         return false;
+    /*
+      The following status was returned in some cases, for example when
+      computing the State Equation Heuristic for 
+      organic-synthesis-split-opt18-strips/p03.pddl
+      It mean that a solution is available, but not proved optimal, due 
+      to numeric difficulties during optimization. Note that the solution 
+      may not be feasible. For example, it may be only dual feasible.
+      Returning true yields a negative heuristic value, so we return false.
+      TODO: maybe change something to prevent this error
+    */
+    case CPX_STAT_NUM_BEST:
+        return false;
     default:
         cerr << "Unexpected status after solving LP/MIP: " << status << endl;
         utils::exit_with(utils::ExitCode::SEARCH_CRITICAL_ERROR);
