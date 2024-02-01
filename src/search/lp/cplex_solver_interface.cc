@@ -473,9 +473,15 @@ void CplexSolverInterface::solve() {
     if (is_trivially_unsolvable()) {
         return;
     } else if (is_mip) {
+        if (init_phase) {
+            cout << "LP detected: " << 0 << endl;
+            cout << "MIP detected: " << 1 << endl;
+        }
         CPX_CALL(CPXmipopt, env, problem);
     } else {
         if (init_phase) {
+            cout << "LP detected: " << 1 << endl;
+            cout << "MIP detected: " << 0 << endl;
             CPX_CALL(CPXgetdettime, env, &start_time);
             CPX_CALL(CPXlpopt, env, problem);
             CPX_CALL(CPXgetdettime, env, &end_time);
