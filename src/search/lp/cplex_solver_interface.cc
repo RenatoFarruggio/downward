@@ -440,6 +440,10 @@ void CplexSolverInterface::set_objective_coefficient(int index, double coefficie
 }
 
 void CplexSolverInterface::set_constraint_lower_bound(int index, double bound) {
+//    double current_lb = constraint_lower_bounds[index];
+//    if (current_lb >= -100 and current_lb != bound) {
+//        cout << "Changing constraint " << index + 1 << " from " << current_lb << " to " << bound << endl;
+//    }
     change_constraint_bounds(index, bound, constraint_upper_bounds[index]);
 }
 
@@ -489,6 +493,7 @@ void CplexSolverInterface::solve() {
             utils::g_log << "First LP solve iterations total: " << iterations_total << endl;
             utils::g_log << "First LP solve ticks: " << delta_time << endl;
             init_phase = false;
+//            counter++;
             return;
         }
 
