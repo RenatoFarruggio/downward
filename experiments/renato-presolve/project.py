@@ -69,6 +69,9 @@ SPARSITY = Attribute(
     "sparsity", min_wins=False, function=arithmetic_mean, digits=2
 )
 
+TOTAL_TIME = Attribute(
+    "total_time", min_wins=True, function=arithmetic_mean, digits=2
+)
 
 AVERAGE_ITERATIONS_AFTER_INITIAL_PER_INITIAL_ITERATIONS = Attribute(
     "average_iterations_after_initial_per_initial_iterations",
