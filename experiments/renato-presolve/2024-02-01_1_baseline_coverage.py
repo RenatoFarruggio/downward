@@ -139,6 +139,14 @@ project.add_absolute_report(
     filter_algorithm=algorithms
 )
 
+for algorithm in algorithms:
+    project.add_absolute_report(
+        exp,
+        attributes=["coverage"],
+        format="tex",
+        name=f"tex-report-{algorithm}",
+        filter_algorithm=[algorithm]
+    )
 
 # Plotting
 #attributes = ["total_time"]
