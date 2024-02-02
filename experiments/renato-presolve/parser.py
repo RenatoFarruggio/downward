@@ -132,6 +132,24 @@ def main():
     )
 
     parser.add_pattern(
+        "lp_variables_of_reduced",
+        r"Reduced LP has .+ rows, (.+) columns, and .+ nonzeros.",
+        type=int,
+    )
+
+    parser.add_pattern(
+        "lp_constraints_of_reduced",
+        r"Reduced LP has (.+) rows, .+ columns, and .+ nonzeros.",
+        type=int,
+    )
+
+    parser.add_pattern(
+        "lp_nonzero_entries_of_reduced",
+        r"Reduced LP has .+ rows, .+ columns, and (.+) nonzeros.",
+        type=int,
+    )
+
+    parser.add_pattern(
         "mip_starts_used",
         r"^(\d+) of \d+ MIP starts provided solutions.",
         type=int,
