@@ -148,6 +148,16 @@ def main():
         r"Reduced LP has .+ rows, .+ columns, and (.+) nonzeros.",
         type=int,
     )
+    def handle_solved_during_presolved_problems(content, props):
+        matches = re.findall(r"All rows and columns eliminated.", content)
+        if len(matches) > 0:
+            props["lp_variables_of_reduced"] = 0
+            props["lp_constraints_of_reduced"] = 0
+            props["lp_nonzero_entries_of_reduced"] = 0
+            props["solved_during_presolve"] = 1
+        else:
+            props["solved_during_presolve"] = 0
+    parser.add_function(handle_solved_during_presolved_problems)
 
     parser.add_pattern(
         "mip_starts_used",
