@@ -54,6 +54,7 @@ void LandmarkCostPartitioningHeuristic::set_cost_assignment(
                 *lm_graph, opts.get<lp::LPSolverType>("lpsolver"),
                 opts.get<int>("lp_solve_method"),
                 opts.get<bool>("crossover"),
+                opts.get<int>("folding_level"),
                 opts.get<int>("solve_dual"));
     } else if (cost_partitioning_strategy == CostPartitioningStrategy::UNIFORM) {
         lm_cost_assignment =
@@ -130,6 +131,12 @@ public:
             "Crossover finds a basis, which is costly, but required for a warm start. "
             "Because of the warm start, it is turned on by default.",
             "true");
+        add_option<int>(
+            "folding_level",
+            "turn folding_level off or on. -1 is automatic, 0 is off, "
+            "1 to 5 are the different levels of folding, where "
+            "1 is a moderate and 5 is an extremely aggressive level of folding.",
+            "-1");
         add_option<int>(
             "solve_dual",
             "sets whether this the solver should solve the dual formulation "

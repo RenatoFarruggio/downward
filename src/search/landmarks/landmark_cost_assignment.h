@@ -67,6 +67,7 @@ public:
         lp::LPSolverType solver_type,
         int lp_solver_method_id,
         bool use_crossover,
+        int folding_level,
         int solve_dual);
 
     virtual double cost_sharing_h_value(
