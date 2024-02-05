@@ -21,9 +21,11 @@ if project.REMOTE:
                                         partition="infai_2")
 else:
     print("Running LOCALLY.")
-    SUITE = ["depot:p01.pddl", "grid:prob01.pddl", "gripper:prob01.pddl"
-             , "organic-synthesis-split-opt18-strips:p02.pddl"
-             , "elevators-opt08-strips:p04.pddl"    # both finish, and take the same time
+    SUITE = ["miconic:s1-0.pddl"
+             #, "depot:p01.pddl"
+             #, "grid:prob01.pddl", "gripper:prob01.pddl"
+             #, "organic-synthesis-split-opt18-strips:p02.pddl"
+             #, "elevators-opt08-strips:p04.pddl"    # both finish, and take the same time
              #, "elevators-opt08-strips:p05.pddl"    # both finish, and take the same time
              #, "elevators-opt08-strips:p06.pddl"    # both finish, and take the same time
              #, "woodworking-opt08-strips:p04.pddl"  # ON runs out of memory
@@ -50,33 +52,45 @@ def heuristic_to_command(heuristic_str: str, settings: str):
         case "PHO":
             return f"astar(operatorcounting([pho_constraints()]{settings}))"
         case "IPOT":
-            return f"astar(initial_state_potential(use_presolve=true{settings}))"
+            return f"astar(initial_state_potential({settings.strip(',')}))"
         case "DPOT":
-            return f"astar(diverse_potentials(use_presolve=true{settings}))"
+            return f"astar(diverse_potentials({settings.strip(',')}))"
         case _:
             print(f"ERROR: Unknown heuristic: {heuristic_str}")
 
-MAX_K = 2
+MAX_K = 10
 CONFIGS = []
 heuristics = ["SEH", 
-              "DEL", "OCP",
+              "DEL", 
+              "OCP",
               "PHO", "IPOT", "DPOT"
               ]
-optimizers = ["", 
+optimizers = ["lp_solve_method=0",  # Default: 0 
               #"lp_solve_method=1", 
-              "lp_solve_method=2", 
+              #"lp_solve_method=2", 
               #"lp_solve_method=4"
               ]
 
-cplex_settings_presolve = ["", "use_presolve=false"] # Default: true
-cplex_settings_solve_dual = ["",  # Default: 0
+cplex_settings_presolve = ["use_presolve=true",  # Default: true 
+                           #"use_presolve=false"
+                           ]
+cplex_settings_solve_dual = ["solve_dual=0",  # Default: 0
                              #"solve_dual=-1", 
-                             "solve_dual=1"] 
-cplex_settings_folding_level = ["",  # Default: -1
-                                "folding_level=0",
-                                "folding_level=1"]
+                             #"solve_dual=1"
+                             ]
+cplex_settings_folding_level = ["folding_level=-1",  # Default: -1
+                                #"folding_level=0",
+                                #"folding_level=1"
+                                ]
 
-cplex_preprocessing_settings = itertools.product(cplex_settings_presolve, cplex_settings_solve_dual, cplex_settings_folding_level)
+cplex_settings_aggregator_application_limit = ["aggregator_application_limit=-1",  # Default: -1
+                                               #"aggregator_application_limit=0",
+                                               ]
+
+cplex_preprocessing_settings = itertools.product(cplex_settings_presolve, 
+                                                 cplex_settings_solve_dual, 
+                                                 cplex_settings_folding_level, 
+                                                 cplex_settings_aggregator_application_limit)
 cplex_preprocessing_settings = [[a for a in setting if len(a)>0] for setting in cplex_preprocessing_settings]
 
 def cplex_preprocessing_settings_to_string(cplex_preprocessing_setting) -> str:
@@ -106,7 +120,7 @@ for heuristic in heuristics:
                 setting = "," + setting
 
             setting_for_name = setting.replace('=', '_').replace(',', '_').strip("_")
-
+            
             name = f"config_{heuristic}_{setting_for_name}".strip("_")
             CONFIGS.append((f"{name}", ["--search", f"{heuristic_to_command(heuristic, setting)}"]))
 
@@ -121,7 +135,7 @@ print(f"Setting up experiment with {len(CONFIGS)} configs with at most {MAX_K} n
 
 
 BUILD_OPTIONS = []
-DRIVER_OPTIONS = ["--overall-time-limit", "5m"]
+DRIVER_OPTIONS = ["--overall-time-limit", "1m"]
 REV_NICKS = [
     #("symmetrybreaking", "presolvetiming"),
     ("symmetrybreaking", "bruteforce_mini_short"),
@@ -201,6 +215,9 @@ def add_density(run):
         size = lp_variables * lp_constraints
         if lp_nonzero_entries is not None and size > 0:
             run["density"] = lp_nonzero_entries / size
+    
+    if "density" not in run:
+        run["density"] = None
     return run
 
 def add_density_of_reduced(run):
@@ -211,6 +228,9 @@ def add_density_of_reduced(run):
         size_of_reduced = lp_variables_of_reduced * lp_constraints_of_reduced
         if lp_nonzero_entries_of_reduced is not None and size_of_reduced > 0:
             run["density_of_reduced"] = lp_nonzero_entries_of_reduced / size_of_reduced
+    
+    if "density_of_reduced" not in run:
+        run["density_of_reduced"] = None
     return run
 
 def add_density_of_reduced_per_density(run):
@@ -218,6 +238,9 @@ def add_density_of_reduced_per_density(run):
     density_of_reduced = run.get("density_of_reduced")
     if density is not None and density_of_reduced is not None and density > 0:
         run["density_of_reduced_per_density"] = density_of_reduced / density
+    
+    if "density_of_reduced_per_density" not in run:
+        run["density_of_reduced_per_density"] = None
     return run
 
 def remove_short_running_lps(run):

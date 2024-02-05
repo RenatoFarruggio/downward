@@ -2,7 +2,6 @@
 
 import os
 import shutil
-import itertools
 
 import project
 
@@ -30,101 +29,30 @@ else:
              #, "woodworking-opt08-strips:p14.pddl"  # ON runs out of memory
              #, "visitall-opt14-strips:p-1-7.pddl"  # OFF runs out of memory
     ]
-    ENV = project.LocalEnvironment(processes=8)
+    #SUITE = project.SUITE_OPTIMAL_STRIPS
+    ENV = project.LocalEnvironment(processes=6)
 
-#    (f"SEH", ["--search", "astar(operatorcounting([state_equation_constraints()]))"]),
+
+CONFIGS = [
+    (f"SEH", ["--search", "astar(operatorcounting([state_equation_constraints()],use_presolve=false,aggregator_application_limit=0),bound=0)"]),
 #    (f"DEL", ["--search", "astar(operatorcounting([delete_relaxation_constraints()]))"]),
 #    (f"OCP", ["--search", "astar(landmark_cost_partitioning(lm_rhw(),cost_partitioning=optimal))"]),
 #    (f"PHO", ["--search", "astar(operatorcounting([pho_constraints()]))"]),
 #    (f"IPOT", ["--search", "astar(initial_state_potential(use_presolve=true))"]),
 #    (f"DPOT", ["--search", "astar(diverse_potentials(use_presolve=true))"]),
-def heuristic_to_command(heuristic_str: str, settings: str):
-    match(heuristic_str):
-        case "SEH":
-            return f"astar(operatorcounting([state_equation_constraints()]{settings}))"
-        case "DEL":
-            return f"astar(operatorcounting([delete_relaxation_constraints()]{settings}))"  
-        case "OCP":
-            return f"astar(landmark_cost_partitioning(lm_rhw(),cost_partitioning=optimal{settings}))"
-        case "PHO":
-            return f"astar(operatorcounting([pho_constraints()]{settings}))"
-        case "IPOT":
-            return f"astar(initial_state_potential(use_presolve=true{settings}))"
-        case "DPOT":
-            return f"astar(diverse_potentials(use_presolve=true{settings}))"
-        case _:
-            print(f"ERROR: Unknown heuristic: {heuristic_str}")
-
-MAX_K = 2
-CONFIGS = []
-heuristics = ["SEH", 
-              "DEL", "OCP",
-              "PHO", "IPOT", "DPOT"
-              ]
-optimizers = ["", 
-              "lp_solve_method=1", 
-              "lp_solve_method=2", 
-              "lp_solve_method=4"
-              ]
-
-cplex_settings_presolve = ["", "use_presolve=false"] # Default: true
-cplex_settings_solve_dual = ["",  # Default: 0
-                             #"solve_dual=-1", 
-                             "solve_dual=1"] 
-cplex_settings_folding_level = ["",  # Default: -1
-                                "folding_level=0",
-                                "folding_level=1"]
-
-cplex_preprocessing_settings = itertools.product(cplex_settings_presolve, cplex_settings_solve_dual, cplex_settings_folding_level)
-cplex_preprocessing_settings = [[a for a in setting if len(a)>0] for setting in cplex_preprocessing_settings]
-
-def cplex_preprocessing_settings_to_string(cplex_preprocessing_setting) -> str:
-    if len(cplex_preprocessing_setting) > 0:
-        return ",".join(cplex_preprocessing_setting)
-    else:
-        return ""
-
-
-#for cplex_preprocessing_setting in cplex_preprocessing_settings:
-#    print(f"({len(cplex_preprocessing_setting)}) {cplex_preprocessing_settings_to_string(cplex_preprocessing_setting)}")
-
-
-settings = [""]
-for heuristic in heuristics:
-    for optimizer in optimizers:
-        for cplex_preprocessing_setting in cplex_preprocessing_settings:
-            if len(cplex_preprocessing_setting) >= MAX_K + 1:
-                continue
-
-            setting = ","
-            setting += "," + optimizer
-            setting += "," + cplex_preprocessing_settings_to_string(cplex_preprocessing_setting)
-
-            setting = setting.strip(",")
-            if len(setting) > 0:
-                setting = "," + setting
-
-            setting_for_name = setting.replace('=', '_').replace(',', '_').strip("_")
-
-            name = f"config_{heuristic}_{setting_for_name}".strip("_")
-            CONFIGS.append((f"{name}", ["--search", f"{heuristic_to_command(heuristic, setting)}"]))
-
-
-print(f"Setting up experiment with {len(CONFIGS)} configs with at most {MAX_K} non-default preprocessing settings")
-#counter = 0
-#for config in CONFIGS:
-#    counter += 1
-#    print(f"({counter}/{len(CONFIGS)}) {config}")
-#    print()
-
+]
 
 
 BUILD_OPTIONS = []
-DRIVER_OPTIONS = ["--overall-time-limit", "1m"]
+DRIVER_OPTIONS = ["--overall-time-limit", "5m"]
 REV_NICKS = [
     #("symmetrybreaking", "presolvetiming"),
-    ("symmetrybreaking", "bruteforce_mini_short"),
+    ("symmetrybreaking", "baseline-size-initial"),
 ]
+
+VARIABLES_PER_CONSTRAINT = Attribute(
+    "variables_per_constraint", min_wins=False, function=arithmetic_mean, digits=5
+)
 
 DENSITY = Attribute(
     "density", min_wins=False, function=arithmetic_mean, digits=5
@@ -147,24 +75,28 @@ ATTRIBUTES = [
     "coverage",
     #"expansions",
     #"memory",
-    "presolve_time",
-    "presolve_ticks",
+    
+    #"presolve_time",
+    #"presolve_ticks",
+    
     "initial_lp_solve_ticks",
     #"search_time",
     #"lp_solve_time_sum",
     #"lps_detected",
     #"mips_detected",
     #project.EVALUATIONS_PER_TIME,
+
     "lp_variables",
     "lp_constraints",
     "lp_nonzero_entries",
-    "lp_variables_of_reduced",
-    "lp_constraints_of_reduced",
-    "lp_nonzero_entries_of_reduced",
+    #"lp_variables_of_reduced",
+    #"lp_constraints_of_reduced",
+    #"lp_nonzero_entries_of_reduced",
     "solved_during_presolve",
+    VARIABLES_PER_CONSTRAINT,
     DENSITY,
-    DENSITY_OF_REDUCED,
-    DENSITY_OF_REDUCED_PER_DENSITY,
+    #DENSITY_OF_REDUCED,
+    #DENSITY_OF_REDUCED_PER_DENSITY,
 ]
 
 exp = project.FastDownwardExperiment(environment=ENV, revision_cache=REVISION_CACHE)
@@ -192,6 +124,13 @@ exp.add_step("start", exp.start_runs)
 exp.add_fetcher(name="fetch")
 
 
+def add_variables_per_constraint(run):
+    lp_variables = run.get("lp_variables")
+    lp_constraints = run.get("lp_constraints")
+    if lp_variables is not None and lp_constraints is not None and lp_constraints > 0:
+        run["variables_per_constraint"] = lp_variables / lp_constraints
+    return run
+
 def add_density(run):
     lp_variables = run.get("lp_variables")
     lp_constraints = run.get("lp_constraints")
@@ -200,6 +139,9 @@ def add_density(run):
         size = lp_variables * lp_constraints
         if lp_nonzero_entries is not None and size > 0:
             run["density"] = lp_nonzero_entries / size
+    
+    if "density" not in run:
+        run["density"] = None
     return run
 
 def add_density_of_reduced(run):
@@ -210,6 +152,9 @@ def add_density_of_reduced(run):
         size_of_reduced = lp_variables_of_reduced * lp_constraints_of_reduced
         if lp_nonzero_entries_of_reduced is not None and size_of_reduced > 0:
             run["density_of_reduced"] = lp_nonzero_entries_of_reduced / size_of_reduced
+    
+    if "density_of_reduced" not in run:
+        run["density_of_reduced"] = None
     return run
 
 def add_density_of_reduced_per_density(run):
@@ -236,7 +181,8 @@ algorithms = [REV_NICKS[0][1] + ":" + config[0] for config in CONFIGS]
 project.add_absolute_report(
     exp,
     attributes=ATTRIBUTES,
-    filter=[add_density,
+    filter=[add_variables_per_constraint,
+            add_density,
             add_density_of_reduced,
             add_density_of_reduced_per_density],
     #filter=[add_total_time_minus_search_time, project.add_evaluations_per_time], 
@@ -244,21 +190,28 @@ project.add_absolute_report(
     #filter=[project.add_evaluations_per_time]
 )
 
+project.add_absolute_report(
+    exp,
+    attributes=["lp_variables",
+                "lp_constraints",
+                VARIABLES_PER_CONSTRAINT,
+                DENSITY],
+    filter=[add_variables_per_constraint,
+            add_density],
+    name=f"{exp.name}-abs-constraints_matrix_stats"
+)
+
 #for algorithm in algorithms:
 #    project.add_absolute_report(
 #        exp,
 #        filter_algorithm=[algorithm],
-#        attributes=["coverage",
-#                    "error",
-#                    project.TOTAL_TIME],
+#        attributes=[DENSITY_OF_REDUCED_PER_DENSITY],
 #        filter=[remove_failed_runs,
 #                add_density,
 #                add_density_of_reduced,
 #                add_density_of_reduced_per_density],
 #        name=f"{exp.name}-{algorithm}-abs-success-only"
 #    )
-
-#####
 
 #project.add_absolute_report(
 #    exp,
