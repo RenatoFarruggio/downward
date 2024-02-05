@@ -252,8 +252,13 @@ double LandmarkEfficientOptimalSharedCostAssignment::cost_sharing_h_value(
     lp_solver.load_problem(lp);
 
     // Solve the linear program.
-    lp_solver.solve();
-
+    static bool is_first = true;
+    if (is_first) {
+        lp_solver.solve_with_statistics();
+    } else {
+        lp_solver.solve();
+    }
+    
     assert(lp_solver.has_optimal_solution());
     double h = lp_solver.get_objective_value();
 
