@@ -56,7 +56,9 @@ void LandmarkCostPartitioningHeuristic::set_cost_assignment(
                 opts.get<bool>("use_presolve"),
                 opts.get<bool>("crossover"),
                 opts.get<int>("folding_level"),
-                opts.get<int>("solve_dual"));
+                opts.get<int>("solve_dual"),
+                opts.get<int>("aggregator_application_limit")
+                );
     } else if (cost_partitioning_strategy == CostPartitioningStrategy::UNIFORM) {
         lm_cost_assignment =
             utils::make_unique_ptr<LandmarkUniformSharedCostAssignment>(
@@ -151,6 +153,13 @@ public:
             "it to 1 will turn it on, and setting it to -1 will turn it off "
             "entirely.",
             "0"
+        );
+        add_option<int>(
+            "aggregator_application_limit",
+            "determines the number of times the aggregator is applied maximal. " 
+            "The default value is -1, which corresponds to 1 for an LP and to "
+            "infinite for a MIP. 0 turns it off.",
+            "-1"
         );
         lp::add_lp_solver_option_to_feature(*this);
 

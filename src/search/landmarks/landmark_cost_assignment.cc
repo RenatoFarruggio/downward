@@ -146,7 +146,8 @@ LandmarkEfficientOptimalSharedCostAssignment::LandmarkEfficientOptimalSharedCost
         bool use_presolve,
         bool use_crossover, 
         int folding_level, 
-        int solve_dual)
+        int solve_dual,
+        int aggregator_application_limit)
     : LandmarkCostAssignment(operator_costs, graph),
       lp_solver(solver_type),
       lp(build_initial_lp()) {
@@ -155,6 +156,7 @@ LandmarkEfficientOptimalSharedCostAssignment::LandmarkEfficientOptimalSharedCost
         lp_solver.set_crossover(use_crossover);
         lp_solver.set_folding_level(folding_level);
         lp_solver.set_solve_dual(solve_dual);
+        lp_solver.set_aggregator_application_limit(aggregator_application_limit);
 }
 
 lp::LinearProgram LandmarkEfficientOptimalSharedCostAssignment::build_initial_lp() {

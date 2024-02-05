@@ -69,7 +69,8 @@ public:
         bool use_presolve,
         bool use_crossover,
         int folding_level,
-        int solve_dual);
+        int solve_dual,
+        int aggregator_application_limit);
 
     virtual double cost_sharing_h_value(
         const LandmarkStatusManager &lm_status_manager,
