@@ -105,6 +105,14 @@ void prepare_parser_for_admissible_potentials(plugins::Feature &feature) {
         "entirely.",
         "0"
         );
+    
+    feature.add_option<int>(
+        "aggregator_application_limit",
+        "determines the number of times the aggregator is applied maximal. " 
+        "The default value is -1, which corresponds to 1 for an LP and to "
+        "infinite for a MIP. 0 turns it off.",
+        "-1"
+        );
 
     lp::add_lp_solver_option_to_feature(feature);
     Heuristic::add_options_to_feature(feature);
