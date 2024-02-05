@@ -66,6 +66,7 @@ public:
         const LandmarkGraph &graph,
         lp::LPSolverType solver_type,
         int lp_solver_method_id,
+        bool use_presolve,
         bool use_crossover,
         int folding_level,
         int solve_dual);
