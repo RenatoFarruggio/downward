@@ -19,17 +19,17 @@ if project.REMOTE:
     ENV = project.BaselSlurmEnvironment(email="renato.farruggio@unibas.ch")
 else:
     print("Running LOCALLY.")
-    #SUITE = ["depot:p01.pddl", "grid:prob01.pddl", "gripper:prob01.pddl"
-    #         , "organic-synthesis-split-opt18-strips:p02.pddl"
-    #         , "elevators-opt08-strips:p04.pddl"    # both finish, and take the same time
-    #         #, "elevators-opt08-strips:p05.pddl"    # both finish, and take the same time
-    #         #, "elevators-opt08-strips:p06.pddl"    # both finish, and take the same time
-    #         #, "woodworking-opt08-strips:p04.pddl"  # ON runs out of memory
-    #         #, "woodworking-opt08-strips:p13.pddl"  # ON runs out of time
-    #         #, "woodworking-opt08-strips:p14.pddl"  # ON runs out of memory
-    #         #, "visitall-opt14-strips:p-1-7.pddl"  # OFF runs out of memory
-    #]
-    SUITE = project.SUITE_OPTIMAL_STRIPS
+    SUITE = ["depot:p01.pddl", "grid:prob01.pddl", "gripper:prob01.pddl"
+             , "organic-synthesis-split-opt18-strips:p02.pddl"
+             , "elevators-opt08-strips:p04.pddl"    # both finish, and take the same time
+             #, "elevators-opt08-strips:p05.pddl"    # both finish, and take the same time
+             #, "elevators-opt08-strips:p06.pddl"    # both finish, and take the same time
+             #, "woodworking-opt08-strips:p04.pddl"  # ON runs out of memory
+             #, "woodworking-opt08-strips:p13.pddl"  # ON runs out of time
+             #, "woodworking-opt08-strips:p14.pddl"  # ON runs out of memory
+             #, "visitall-opt14-strips:p-1-7.pddl"  # OFF runs out of memory
+    ]
+    #SUITE = project.SUITE_OPTIMAL_STRIPS
     ENV = project.LocalEnvironment(processes=6)
 
 

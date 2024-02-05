@@ -35,11 +35,11 @@ else:
 
 CONFIGS = [
 #    (f"SEH", ["--search", "astar(operatorcounting([state_equation_constraints()],use_presolve=false,aggregator_application_limit=0),bound=0)"]),
-#    (f"DEL", ["--search", "astar(operatorcounting([delete_relaxation_constraints()],use_presolve=false,aggregator_application_limit=0),bound=0)"]),
-#    (f"OCP", ["--search", "astar(landmark_cost_partitioning(lm_rhw(),cost_partitioning=optimal,use_presolve=false,aggregator_application_limit=0),bound=0)"]),
-#    (f"PHO", ["--search", "astar(operatorcounting([pho_constraints()],use_presolve=false,aggregator_application_limit=0),bound=0)"]),
-#    (f"IPOT", ["--search", "astar(initial_state_potential(use_presolve=false,aggregator_application_limit=0),bound=0)"]),
-    (f"DPOT", ["--search", "astar(diverse_potentials(use_presolve=false,aggregator_application_limit=0),bound=0)"]),
+    (f"DEL", ["--search", "astar(operatorcounting([delete_relaxation_constraints()]),bound=0)"]),
+#    (f"OCP", ["--search", "astar(landmark_cost_partitioning(lm_rhw(),cost_partitioning=optimal))"]),
+#    (f"PHO", ["--search", "astar(operatorcounting([pho_constraints()]))"]),
+#    (f"IPOT", ["--search", "astar(initial_state_potential(use_presolve=true))"]),
+#    (f"DPOT", ["--search", "astar(diverse_potentials(use_presolve=true))"]),
 ]
 
 
@@ -52,6 +52,10 @@ REV_NICKS = [
 
 VARIABLES_PER_CONSTRAINT = Attribute(
     "variables_per_constraint", min_wins=False, function=arithmetic_mean, digits=5
+)
+
+VARIABLES_PER_CONSTRAINT_OF_REDUCED = Attribute(
+    "variables_per_constraint_of_reduced", min_wins=False, function=arithmetic_mean, digits=5
 )
 
 DENSITY = Attribute(
@@ -76,8 +80,8 @@ ATTRIBUTES = [
     #"expansions",
     #"memory",
     
-    #"presolve_time",
-    #"presolve_ticks",
+    "presolve_time",
+    "presolve_ticks",
     
     "initial_lp_solve_ticks",
     #"search_time",
@@ -89,14 +93,15 @@ ATTRIBUTES = [
     "lp_variables",
     "lp_constraints",
     "lp_nonzero_entries",
-    #"lp_variables_of_reduced",
-    #"lp_constraints_of_reduced",
-    #"lp_nonzero_entries_of_reduced",
+    "lp_variables_of_reduced",
+    "lp_constraints_of_reduced",
+    "lp_nonzero_entries_of_reduced",
     "solved_during_presolve",
     VARIABLES_PER_CONSTRAINT,
+    VARIABLES_PER_CONSTRAINT_OF_REDUCED,
     DENSITY,
-    #DENSITY_OF_REDUCED,
-    #DENSITY_OF_REDUCED_PER_DENSITY,
+    DENSITY_OF_REDUCED,
+    DENSITY_OF_REDUCED_PER_DENSITY,
 ]
 
 exp = project.FastDownwardExperiment(environment=ENV, revision_cache=REVISION_CACHE)
@@ -123,6 +128,15 @@ exp.add_step("build", exp.build)
 exp.add_step("start", exp.start_runs)
 exp.add_fetcher(name="fetch")
 
+
+def add_variables_per_constraint_of_reduced(run):
+    lp_variables_of_reduced = run.get("lp_variables_of_reduced")
+    lp_constraints_of_reduced = run.get("lp_constraints_of_reduced")
+    if lp_variables_of_reduced is not None and lp_constraints_of_reduced is not None and lp_constraints_of_reduced > 0:
+        run["variables_per_constraint_of_reduced"] = lp_variables_of_reduced / lp_constraints_of_reduced
+    else:
+        run["variables_per_constraint_of_reduced"] = None
+    return run
 
 def add_variables_per_constraint(run):
     lp_variables = run.get("lp_variables")
@@ -162,6 +176,8 @@ def add_density_of_reduced_per_density(run):
     density_of_reduced = run.get("density_of_reduced")
     if density is not None and density_of_reduced is not None and density > 0:
         run["density_of_reduced_per_density"] = density_of_reduced / density
+    else:
+        run["density_of_reduced_per_density"] = None
     return run
 
 def remove_short_running_lps(run):
@@ -182,6 +198,7 @@ project.add_absolute_report(
     exp,
     attributes=ATTRIBUTES,
     filter=[add_variables_per_constraint,
+            add_variables_per_constraint_of_reduced,
             add_density,
             add_density_of_reduced,
             add_density_of_reduced_per_density],
@@ -192,12 +209,15 @@ project.add_absolute_report(
 
 project.add_absolute_report(
     exp,
-    attributes=["lp_variables",
-                "lp_constraints",
-                VARIABLES_PER_CONSTRAINT,
-                DENSITY],
-    filter=[add_variables_per_constraint,
-            add_density],
+    attributes=["lp_variables_of_reduced",
+                "lp_constraints_of_reduced",
+                "solved_during_presolve",
+                VARIABLES_PER_CONSTRAINT_OF_REDUCED,
+                DENSITY_OF_REDUCED],
+    filter=[add_variables_per_constraint_of_reduced,
+            add_density,
+            add_density_of_reduced,
+            add_density_of_reduced_per_density],
     name=f"{exp.name}-abs-constraints_matrix_stats"
 )
 
