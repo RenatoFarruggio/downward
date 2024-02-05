@@ -77,6 +77,12 @@ void prepare_parser_for_admissible_potentials(plugins::Feature &feature) {
     );
 
     feature.add_option<bool>(
+        "use_presolve",
+        "turn presolving on or off. Using presolve creates an overhead "
+        "so turning presolve off might decrease runtime.",
+        "true");
+
+    feature.add_option<bool>(
         "crossover",
         "when set to false, turns off crossover when using the barrier optimizer. "
         "Crossover finds a basis, which is costly, but required for a warm start. "

@@ -29,6 +29,7 @@ PotentialOptimizer::PotentialOptimizer(const plugins::Options &opts)
     lp_solver.set_use_presolve(opts.get<bool>("use_presolve"));
     lp_solver.lp_solve_method(opts.get<int>("lp_solve_method"));
     lp_solver.set_solve_dual(opts.get<int>("solve_dual"));
+    lp_solver.set_use_presolve(opts.get<bool>("use_presolve"));
     lp_solver.set_crossover(opts.get<bool>("crossover"));
     lp_solver.set_folding_level(opts.get<int>("folding_level"));
     task_properties::verify_no_axioms(task_proxy);
