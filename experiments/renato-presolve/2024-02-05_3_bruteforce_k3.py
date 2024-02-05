@@ -17,8 +17,7 @@ REVISION_CACHE = os.environ.get("DOWNWARD_REVISION_CACHE")
 if project.REMOTE:
     print("Running on REMOTE.")
     SUITE = project.SUITE_OPTIMAL_STRIPS
-    ENV = project.BaselSlurmEnvironment(email="renato.farruggio@unibas.ch",
-                                        partition="infai_2")
+    ENV = project.BaselSlurmEnvironment(email="renato.farruggio@unibas.ch")
 else:
     print("Running LOCALLY.")
     SUITE = ["depot:p01.pddl", "grid:prob01.pddl", "gripper:prob01.pddl"
@@ -56,21 +55,21 @@ def heuristic_to_command(heuristic_str: str, settings: str):
         case _:
             print(f"ERROR: Unknown heuristic: {heuristic_str}")
 
-MAX_K = 2
+MAX_K = 3
 CONFIGS = []
 heuristics = ["SEH", 
               "DEL", "OCP",
               "PHO", "IPOT", "DPOT"
               ]
 optimizers = ["", 
-              #"lp_solve_method=1", 
+              "lp_solve_method=1", 
               "lp_solve_method=2", 
-              #"lp_solve_method=4"
+              "lp_solve_method=4"
               ]
 
 cplex_settings_presolve = ["", "use_presolve=false"] # Default: true
 cplex_settings_solve_dual = ["",  # Default: 0
-                             #"solve_dual=-1", 
+                             "solve_dual=-1", 
                              "solve_dual=1"] 
 cplex_settings_folding_level = ["",  # Default: -1
                                 "folding_level=0",

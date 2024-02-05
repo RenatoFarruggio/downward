@@ -121,7 +121,7 @@ print(f"Setting up experiment with {len(CONFIGS)} configs with at most {MAX_K} n
 
 
 BUILD_OPTIONS = []
-DRIVER_OPTIONS = ["--overall-time-limit", "1m"]
+DRIVER_OPTIONS = ["--overall-time-limit", "5m"]
 REV_NICKS = [
     #("symmetrybreaking", "presolvetiming"),
     ("symmetrybreaking", "bruteforce_mini_short"),
