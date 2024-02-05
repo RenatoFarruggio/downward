@@ -84,6 +84,13 @@ void prepare_parser_for_admissible_potentials(plugins::Feature &feature) {
         "true");
     
     feature.add_option<int>(
+        "folding_level",
+        "turn folding_level off or on. -1 is automatic, 0 is off, "
+        "1 to 5 are the different levels of folding, where "
+        "1 is a moderate and 5 is an extremely aggressive level of folding.",
+        "-1");
+    
+    feature.add_option<int>(
         "solve_dual",
         "sets whether this the solver should solve the dual formulation "
         "of the LP instead of the Primal LP. Per default this is set to "
