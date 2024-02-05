@@ -134,6 +134,7 @@ public:
     void set_use_warm_starts(const bool use_warm_starts);
     void lp_solve_method(const int lp_solve_method_id);
     void set_solve_dual(const int solve_dual);
+    void set_aggregator_application_limit(const int aggregator_application_limit);
 
     /*
       Return true if the solving the LP showed that it is bounded feasible and

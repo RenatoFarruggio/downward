@@ -261,6 +261,7 @@ public:
     virtual void lp_solve_method(int lp_solve_method_id) override;
     virtual void set_solve_dual(int solve_dual) override;
     virtual void set_crossover(bool use_crossover) override;
+    virtual void set_aggregator_application_limit(int aggregator_application_limit) override;
 };
 }
 #endif

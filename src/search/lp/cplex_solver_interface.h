@@ -250,6 +250,7 @@ public:
     virtual void set_use_warm_starts(bool use_warm_starts) override;
     virtual void lp_solve_method(int method_id) override;
     virtual void set_solve_dual(int solve_dual) override;
+    virtual void set_aggregator_application_limit(int aggregator_application_limit) override;
 };
 }
 #endif

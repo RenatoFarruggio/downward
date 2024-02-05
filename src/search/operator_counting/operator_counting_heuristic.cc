@@ -25,6 +25,7 @@ OperatorCountingHeuristic::OperatorCountingHeuristic(const plugins::Options &opt
       use_warm_starts(opts.get<bool>("use_warm_starts")),
       lp_solve_method_id(opts.get<int>("lp_solve_method")),
       solve_dual(opts.get<int>("solve_dual")),
+      aggregator_application_limit(opts.get<int>("aggregator_application_limit")),
       is_first(true) {
     lp_solver.set_mip_gap(0);
     named_vector::NamedVector<lp::LPVariable> variables;
@@ -45,6 +46,8 @@ OperatorCountingHeuristic::OperatorCountingHeuristic(const plugins::Options &opt
     lp_solver.set_use_warm_starts(use_warm_starts);
     lp_solver.lp_solve_method(lp_solve_method_id);
     lp_solver.set_solve_dual(solve_dual);
+    lp_solver.set_aggregator_application_limit(aggregator_application_limit);
+
     lp_solver.load_problem(lp);
 
 }
@@ -186,6 +189,14 @@ public:
             "it to 1 will turn it on, and setting it to -1 will turn it off "
             "entirely.",
             "0"
+        );
+
+        add_option<int>(
+            "aggregator_application_limit",
+            "determines the number of times the aggregator is applied maximal. " 
+            "The default value is -1, which corresponds to 1 for an LP and to "
+            "infinite for a MIP. 0 turns it off.",
+            "-1"
         );
 
         lp::add_lp_solver_option_to_feature(*this);

@@ -275,6 +275,10 @@ void LPSolver::set_solve_dual(const int solve_dual) {
     pimpl->set_solve_dual(solve_dual);
 }
 
+void LPSolver::set_aggregator_application_limit(const int aggregator_application_limit) {
+    pimpl->set_aggregator_application_limit(aggregator_application_limit);
+}
+
 vector<double> LPSolver::extract_solution() const {
     return pimpl->extract_solution();
 }

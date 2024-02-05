@@ -27,6 +27,7 @@ class OperatorCountingHeuristic : public Heuristic {
     const bool use_warm_starts;
     const int lp_solve_method_id;
     const int solve_dual;
+    const int aggregator_application_limit;
     bool is_first;
 protected:
     virtual int compute_heuristic(const State &ancestor_state) override;

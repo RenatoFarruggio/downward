@@ -859,5 +859,14 @@ void CplexTwoPhaseSolverInterface::set_crossover(bool use_crossover) {
     }
 }
 
+void CplexTwoPhaseSolverInterface::set_aggregator_application_limit(int aggregator_application_limit) {
+    // The according documentation can be found at:
+    //  https://www.ibm.com/docs/en/icos/22.1.1?topic=parameters-preprocessing-aggregator-application-limit
+
+    CPXINT value = aggregator_application_limit;
+    CPX_CALL(CPXsetintparam, env, CPXPARAM_Preprocessing_Aggregator, value);
+    cout << "Aggregator fill limit is set to: " << aggregator_application_limit << endl;
+}
+
 }
 #endif
