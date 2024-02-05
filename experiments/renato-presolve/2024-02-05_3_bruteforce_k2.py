@@ -55,7 +55,7 @@ def heuristic_to_command(heuristic_str: str, settings: str):
         case _:
             print(f"ERROR: Unknown heuristic: {heuristic_str}")
 
-MAX_K = 3
+MAX_K = 2
 CONFIGS = []
 heuristics = ["SEH", 
               "DEL", "OCP",
@@ -69,7 +69,7 @@ optimizers = ["",
 
 cplex_settings_presolve = ["", "use_presolve=false"] # Default: true
 cplex_settings_solve_dual = ["",  # Default: 0
-                             "solve_dual=-1", 
+                             #"solve_dual=-1", 
                              "solve_dual=1"] 
 cplex_settings_folding_level = ["",  # Default: -1
                                 "folding_level=0",
