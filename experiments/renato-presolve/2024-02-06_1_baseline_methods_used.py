@@ -48,7 +48,7 @@ CONFIGS = [
 BUILD_OPTIONS = []
 REV_NICKS = [
     #("symmetrybreaking", "presolvetiming"),
-    ("symmetrybreaking", "baseline-size"),
+    ("symmetrybreaking", "baseline"),
 ]
 
 VARIABLES_PER_CONSTRAINT = Attribute(
