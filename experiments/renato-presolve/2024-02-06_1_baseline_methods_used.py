@@ -224,10 +224,11 @@ algorithms = [REV_NICKS[0][1] + ":" + config[0] for config in CONFIGS]
 project.add_absolute_report(
     exp,
     attributes=ATTRIBUTES,
+    filter_algorithm=algorithms,
     filter=[project.add_lp_count,
             project.add_average_iterations_after_initial,
             project.add_average_iterations_after_initial_per_initial_iterations,
-            project.add_initial_iterations_per_average_iterations_after_initial,],
+            project.add_initial_iterations_per_average_iterations_after_initial],
     #filter=[add_total_time_minus_search_time, project.add_evaluations_per_time], 
     #filter=[remove_short_running_lps, add_total_time_minus_search_time, project.add_evaluations_per_time], 
     #filter=[project.add_evaluations_per_time]
@@ -239,10 +240,10 @@ for algorithm in algorithms:
         exp,
         filter_algorithm=[algorithm],
         attributes=ATTRIBUTES,
-        filter=[project.add_average_iterations_after_initial,
+        filter=[project.add_lp_count,
+                project.add_average_iterations_after_initial,
                 project.add_average_iterations_after_initial_per_initial_iterations,
-                project.add_initial_iterations_per_average_iterations_after_initial,
-                project.add_lp_count],
+                project.add_initial_iterations_per_average_iterations_after_initial],
         name=f"{exp.name}-{algorithm}-abs"
     )
 
