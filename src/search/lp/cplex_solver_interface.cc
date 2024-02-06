@@ -242,9 +242,18 @@ CplexSolverInterface::CplexSolverInterface()
       num_permanent_constraints(0), 
       start_time(0), end_time(0),
       ticks_sum(0), iterations_sum_phase_1(0), iterations_sum_total(0),
+      iterations_sum_barrier(0),
       no_iterations_counter_phase_1(0), non_zero_iterations_counter_phase_1(0),
       no_iterations_counter_total(0), non_zero_iterations_counter_total(0),
       init_phase(true),
+      method_0_used_counter(0),
+      method_1_used_counter(0),
+      method_2_used_counter(0),
+      method_3_used_counter(0),
+      method_4_used_counter(0),
+      method_5_used_counter(0),
+      method_6_used_counter(0),
+      unknown_method_used_counter(0),
       cpx_lp_solve_method(CPXlpopt),
       num_unsatisfiable_constraints(0),
       num_unsatisfiable_temp_constraints(0) {
@@ -486,12 +495,18 @@ void CplexSolverInterface::solve() {
 
             int iterations_phase_1 = CPXgetphase1cnt(env, problem);
             int iterations_total = CPXgetitcnt(env, problem);
+            int barrier_iterations = CPXgetbaritcnt(env, problem);
             double delta_time = (end_time - start_time);
 
             utils::g_log << "First LP solve phase 1 iterations: " << iterations_phase_1 << endl;
             utils::g_log << "First LP solve phase 2 iterations: " << iterations_total - iterations_phase_1 << endl;
             utils::g_log << "First LP solve iterations total: " << iterations_total << endl;
+            utils::g_log << "First LP solve iterations barrier: " << barrier_iterations << endl;
             utils::g_log << "First LP solve ticks: " << delta_time << endl;
+
+            int method_used = CPXgetmethod(env, problem);
+            utils::g_log << "Method used for initial step: " << method_used << endl;
+
             init_phase = false;
 //            counter++;
             return;
@@ -503,12 +518,14 @@ void CplexSolverInterface::solve() {
 
         int iterations_phase_1 = CPXgetphase1cnt(env, problem);
         int iterations_total = CPXgetitcnt(env, problem);
+        int barrier_iterations = CPXgetbaritcnt(env, problem);
         double delta_time = (end_time - start_time);
 
 
         iterations_sum_phase_1 += iterations_phase_1;
         iterations_sum_total += iterations_total;
         ticks_sum += delta_time;
+        iterations_sum_barrier += barrier_iterations;
 
         if (iterations_phase_1 == 0) {
             no_iterations_counter_phase_1++;
@@ -520,6 +537,29 @@ void CplexSolverInterface::solve() {
             no_iterations_counter_total++;
         } else {
             non_zero_iterations_counter_total++;
+        }
+
+        
+
+        int method_used = CPXgetmethod(env, problem);
+        
+        if (method_used == 0) {
+            method_0_used_counter += 1;
+        } else if (method_used == 1) {
+            method_1_used_counter += 1;
+        } else if (method_used == 2) {
+            method_2_used_counter += 1;
+        } else if (method_used == 3) {
+            method_3_used_counter += 1;
+        } else if (method_used == 4) {
+            method_4_used_counter += 1;
+        } else if (method_used == 5) {
+            method_5_used_counter += 1;
+        } else if (method_used == 6) {
+            method_6_used_counter += 1;
+        } else {
+            cout << "UNKNOWN METHOD USED: " << method_used << endl;
+            unknown_method_used_counter += 1;
         }
         
 //        int method_used = CPXgetmethod(env, problem);
@@ -702,12 +742,21 @@ void CplexSolverInterface::print_statistics() const {
         utils::g_log << "LP solve phase 1 iterations: " << iterations_sum_phase_1 << endl;
         utils::g_log << "LP solve phase 2 iterations: " << iterations_sum_total - iterations_sum_phase_1 << endl;
         utils::g_log << "LP solve iterations total: " << iterations_sum_total << endl;
+        utils::g_log << "LP solve barrier iterations total: " << iterations_sum_barrier << endl;
         utils::g_log << "LP solve ticks: " << ticks_sum << endl;
 
         utils::g_log << "LP solve phase 1 zero iterations count: " << no_iterations_counter_phase_1 << endl;
         utils::g_log << "LP solve phase 1 nonzero iterations count: " << non_zero_iterations_counter_phase_1 << endl;
         utils::g_log << "LP solve total zero iterations count: " << no_iterations_counter_total << endl;
         utils::g_log << "LP solve total nonzero iterations count: " << non_zero_iterations_counter_total << endl;
+        utils::g_log << "Number of method 0 used after initial: " << method_0_used_counter << endl;
+        utils::g_log << "Number of method 1 used after initial: " << method_1_used_counter << endl;
+        utils::g_log << "Number of method 2 used after initial: " << method_2_used_counter << endl;
+        utils::g_log << "Number of method 3 used after initial: " << method_3_used_counter << endl;
+        utils::g_log << "Number of method 4 used after initial: " << method_4_used_counter << endl;
+        utils::g_log << "Number of method 5 used after initial: " << method_5_used_counter << endl;
+        utils::g_log << "Number of method 6 used after initial: " << method_6_used_counter << endl;
+        utils::g_log << "Number of other method used after initial: " << unknown_method_used_counter << endl;
     }
 }
 

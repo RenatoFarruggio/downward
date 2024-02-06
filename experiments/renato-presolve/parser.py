@@ -248,6 +248,13 @@ def main():
         type=float,
     )
 
+    parser.add_pattern(
+        "initial_iterations_barrier",
+        r"\] First LP solve iterations barrier: (.+)",
+        type=int,
+    )
+
+
 
     parser.add_bottom_up_pattern(
         "phase_1_zero_iterations_count",
@@ -270,6 +277,66 @@ def main():
     parser.add_bottom_up_pattern(
         "total_nonzero_iterations_count",
         r"LP solve total nonzero iterations count: (.+)",
+        type=int,
+    )
+
+    parser.add_bottom_up_pattern(
+        "iterations_barrier",
+        r"LP solve barrier iterations total: (.+)",
+        type=int,
+    )
+
+    parser.add_pattern(
+        "method_used_for_initial_problem",
+        r"\] Method used for initial step: (.+)",
+        type=int,
+    )
+
+    parser.add_pattern(
+        "number_of_method_0_used_after_initial",
+        r"\] Number of method 0 used after initial: (.+)",
+        type=int,
+    )
+
+    parser.add_pattern(
+        "number_of_method_1_used_after_initial",
+        r"\] Number of method 1 used after initial: (.+)",
+        type=int,
+    )
+
+    parser.add_pattern(
+        "number_of_method_2_used_after_initial",
+        r"\] Number of method 2 used after initial: (.+)",
+        type=int,
+    )
+
+    parser.add_pattern(
+        "number_of_method_3_used_after_initial",
+        r"\] Number of method 3 used after initial: (.+)",
+        type=int,
+    )
+
+    parser.add_pattern(
+        "number_of_method_4_used_after_initial",
+        r"\] Number of method 4 used after initial: (.+)",
+        type=int,
+    )
+
+    parser.add_pattern(
+        "number_of_method_5_used_after_initial",
+        r"\] Number of method 5 used after initial: (.+)",
+        type=int,
+    )
+
+    parser.add_pattern(
+        "number_of_method_6_used_after_initial",
+        r"\] Number of method 6 used after initial: (.+)",
+        type=int,
+    )
+
+    parser.add_pattern(
+        "number_of_other_methods_used_after_initial",
+        r"\] Number of other method used after initial: (.+)",
         type=int,
     )
 
