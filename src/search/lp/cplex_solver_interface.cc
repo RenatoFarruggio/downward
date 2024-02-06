@@ -853,12 +853,13 @@ void CplexSolverInterface::lp_solve_method(int method_id) {
 
 void CplexSolverInterface::set_solve_dual(int solve_dual) {
     // The according documentation can be found at:
-    //  https://www.ibm.com/docs/en/cofz/12.10.0?topic=performance-preprocessing
+    //  CPXPARAM_Preprocessing_Dual
+    //  https://www.ibm.com/docs/en/icos/22.1.1?topic=parameters-presolve-dual-setting
 
 
     cout << "Solving dual formulation is ";
     CPXINT value = solve_dual;
-    CPX_CALL(CPXsetintparam, env, CPX_PARAM_PREDUAL, value);
+    CPX_CALL(CPXsetintparam, env, CPXPARAM_Preprocessing_Dual, value);
     if (solve_dual == 0) {
         cout << "set to automatic" << endl;
     } else if (solve_dual == -1) {
