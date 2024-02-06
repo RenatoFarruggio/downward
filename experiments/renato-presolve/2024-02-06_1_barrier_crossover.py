@@ -155,12 +155,14 @@ ATTRIBUTES = ["error",
     "total_nonzero_iterations_count",
     "lp_count",
     "average_iterations_after_initial",
-    "total_time",
     
+    project.TOTAL_TIME,
+    project.TOTAL_TIME_SUM,
     project.EVALUATIONS_PER_TIME,
     project.SPARSITY,
     project.AVERAGE_ITERATIONS_AFTER_INITIAL_PER_INITIAL_ITERATIONS,
     project.INITIAL_ITERATIONS_PER_AVERAGE_ITERATIONS_AFTER_INITIAL,
+    project.PRESOLVE_TIME_PER_LP_SOLVE_TIME_SUM,
 ]
 
 exp = project.FastDownwardExperiment(environment=ENV, revision_cache=REVISION_CACHE)
@@ -186,21 +188,6 @@ exp.add_parser(exp.PLANNER_PARSER)
 exp.add_step("build", exp.build)
 exp.add_step("start", exp.start_runs)
 exp.add_fetcher(name="fetch")
-
-def add_presolve_time_per_total_time(run):
-    exit()
-    total_time = run.get("total_time")
-    lp_solve_time = run.get("lp_solve_time")
-    # TODO
-    run["presolve_time_per_total_time"] = lp_solve_time / total_time
-    return run
-
-def add_total_time_minus_search_time(run):
-    total_time = run.get("total_time")
-    actual_search_time = run.get("search_time")
-    if total_time is not None and actual_search_time is not None:
-        run["total_time_minus_search_time"] = total_time - actual_search_time
-    return run
 
 def add_warm_starts_plus_cold_starts_minus_evaluations(run):
     num_warm_starts = run.get("num_warm_starts")
@@ -266,8 +253,9 @@ project.add_absolute_report(
             project.add_initial_iterations_per_average_iterations_after_initial,
             project.add_variables_per_constraint,
             project.add_sparsity,
-            project.add_evaluations_per_time]
-)
+            project.add_evaluations_per_time,
+            project.add_presolve_time_per_lp_solve_time_sum,],
+),
 
 
 #for i in range(int(len(CONFIGS)/2)):
@@ -325,7 +313,8 @@ for i in range(int(len(CONFIGS)/2)):
                 project.add_average_iterations_after_initial,
                 project.add_average_iterations_after_initial_per_initial_iterations,
                 project.add_initial_iterations_per_average_iterations_after_initial,
-                project.add_variables_per_constraint],
+                project.add_variables_per_constraint,
+                project.add_presolve_time_per_lp_solve_time_sum,],
         name_postfix=f"comp-{algo1[7:-8]}"
     )
 
@@ -338,6 +327,7 @@ for i in range(int(len(CONFIGS)/2)):
                             REV_NICKS[0][1] + ":" + algo2)],
         attributes=["coverage",
                     project.TOTAL_TIME,
+                    project.TOTAL_TIME_SUM,
                     project.AVERAGE_ITERATIONS_AFTER_INITIAL_PER_INITIAL_ITERATIONS,
                     project.INITIAL_ITERATIONS_PER_AVERAGE_ITERATIONS_AFTER_INITIAL,
                     "presolve_time",
@@ -348,65 +338,11 @@ for i in range(int(len(CONFIGS)/2)):
                 project.add_average_iterations_after_initial,
                 project.add_average_iterations_after_initial_per_initial_iterations,
                 project.add_initial_iterations_per_average_iterations_after_initial,
-                project.add_variables_per_constraint],
+                project.add_variables_per_constraint,
+                project.add_presolve_time_per_lp_solve_time_sum,],
         name_postfix=f"{algo1[7:-8]}-comp-to-default",
     )
 
-# # Plotting
-# def domain_as_category(run1, run2):
-#     # run2['domain'] has the same value, because we always
-#     # compare two runs of the same problem.
-#     return run1["domain"]
-# 
-# exp.add_report(
-#     project.ScatterPlotReport(
-#         relative=True,
-#         get_category=domain_as_category,
-#         attributes=["coverage"],
-#         filter_algorithm=["presolve_timing:config_initial_potential_heuristic_presolve_ON", 
-#                           "presolve_timing:config_initial_potential_heuristic_presolve_OFF"
-#                           ],
-#         format="png",
-#     ),
-#     name=f"{exp.name}-coverage-rel"
-# )
-
-
-
-#attributes = ["total_time"]
-#pairs = [
-#    ("presolvetiming:config_initial_state_potential_heuristic_presolve_on",
-#     "presolvetiming:config_initial_state_potential_heuristic_presolve_off"),
-#]
-#suffix = "-rel" if project.RELATIVE else ""
-#for algo1, algo2 in pairs:
-#    for attr in attributes:
-#        exp.add_report(
-#            project.ScatterPlotReport(
-#                relative=project.RELATIVE,
-#                get_category=None if project.TEX else lambda run1, run2: run1["domain"],
-#                attributes=[attr],
-#                filter_algorithm=[algo1, algo2],
-#                format="tex" if project.TEX else "png",
-#            ),
-#            name=f"{exp.name}-{algo1}-vs-{algo2}-{attr}{suffix}",
-#        )
-
-
-#for config in CONFIGS:
-#    algorithm_name = REV_NICKS[0][1] + ":" + config[0]
-#    exp.add_report(
-#        project.ScatterPlotReport(
-#            relative=False,
-#            attributes=["initial_iterations_total", "iterations_total"],
-#            filter_algorithm=[algorithm_name],
-#            title="Initial vs Total Iterations for Algorithm-1",
-#            xlabel="Initial Iterations Total",
-#            ylabel="Iterations Total",
-#            format="png",
-#            ),
-#        name=f"{config[0][20:]}-iterations_per_initial",
-#    )
 
 project.add_scp_step(exp, "grid", "workspace/downward-projects/")
 
