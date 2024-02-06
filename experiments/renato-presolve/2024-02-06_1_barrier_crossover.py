@@ -16,6 +16,7 @@ if project.REMOTE:
     print("Running on REMOTE.")
     SUITE = project.SUITE_OPTIMAL_STRIPS
     ENV = project.BaselSlurmEnvironment(email="renato.farruggio@unibas.ch")
+    DRIVER_OPTIONS = ["--overall-time-limit", "5m"]
 else:
     print("Running LOCALLY.")
     SUITE = ["depot:p01.pddl", "grid:prob01.pddl", "gripper:prob01.pddl"
@@ -92,6 +93,7 @@ else:
              #, "airport:p22-airport4halfMUC-p3.pddl"
     ]
     ENV = project.LocalEnvironment(processes=8)
+    DRIVER_OPTIONS = ["--overall-time-limit", "1m"]
 
 
 CONFIGS = [
@@ -115,7 +117,6 @@ CONFIGS = [
 ]
 
 BUILD_OPTIONS = []
-DRIVER_OPTIONS = ["--overall-time-limit", "1m"]
 REV_NICKS = [
     ("symmetrybreaking", "crossover_enabled_vs_default"),
 ]

@@ -17,6 +17,7 @@ if project.REMOTE:
     print("Running on REMOTE.")
     SUITE = project.SUITE_OPTIMAL_STRIPS
     ENV = project.BaselSlurmEnvironment(email="renato.farruggio@unibas.ch")
+    DRIVER_OPTIONS = ["--overall-time-limit", "5m"]
 else:
     print("Running LOCALLY.")
     SUITE = ["depot:p01.pddl", "grid:prob01.pddl", "gripper:prob01.pddl"
@@ -31,10 +32,11 @@ else:
     ]
     #SUITE = project.SUITE_OPTIMAL_STRIPS
     ENV = project.LocalEnvironment(processes=6)
+    DRIVER_OPTIONS = ["--overall-time-limit", "1m"]
 
 
 CONFIGS = [
-    (f"SEH", ["--search", "astar(operatorcounting([state_equation_constraints()]),bound=0)"]),
+    (f"SEH", ["--search", "astar(operatorcounting([state_equation_constraints()]))"]),
     (f"DEL", ["--search", "astar(operatorcounting([delete_relaxation_constraints()]))"]),
     (f"OCP", ["--search", "astar(landmark_cost_partitioning(lm_rhw(),cost_partitioning=optimal))"]),
     (f"PHO", ["--search", "astar(operatorcounting([pho_constraints()]))"]),
@@ -44,7 +46,6 @@ CONFIGS = [
 
 
 BUILD_OPTIONS = []
-DRIVER_OPTIONS = ["--overall-time-limit", "5m"]
 REV_NICKS = [
     #("symmetrybreaking", "presolvetiming"),
     ("symmetrybreaking", "baseline-size-initial"),
