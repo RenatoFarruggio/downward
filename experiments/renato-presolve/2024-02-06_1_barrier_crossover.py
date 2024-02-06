@@ -48,18 +48,18 @@ else:
              #, "movie:prob23.pddl"
              #, "movie:prob24.pddl"
              #, "movie:prob25.pddl"
-             , "movie:prob26.pddl"
-             , "movie:prob27.pddl"
-             , "movie:prob28.pddl"
-             , "movie:prob29.pddl"
-             , "movie:prob30.pddl"
+             #, "movie:prob26.pddl"
+             #, "movie:prob27.pddl"
+             #, "movie:prob28.pddl"
+             #, "movie:prob29.pddl"
+             #, "movie:prob30.pddl"
              , "satellite:p01-pfile1.pddl"
              , "satellite:p02-pfile2.pddl"
-             , "satellite:p03-pfile3.pddl"
-             , "satellite:p04-pfile4.pddl"
-             , "satellite:p05-pfile5.pddl"
-             , "satellite:p06-pfile6.pddl"
-             , "satellite:p07-pfile7.pddl"
+             #, "satellite:p03-pfile3.pddl"
+             #, "satellite:p04-pfile4.pddl"
+             #, "satellite:p05-pfile5.pddl"
+             #, "satellite:p06-pfile6.pddl"
+             #, "satellite:p07-pfile7.pddl"
              #, "satellite:p08-pfile8.pddl"
              #, "satellite:p09-pfile9.pddl"
              #, "satellite:p10-pfile10.pddl"
@@ -86,8 +86,8 @@ else:
              #, "satellite:p31-HC-pfile11.pddl"
              #, "satellite:p32-HC-pfile12.pddl"
              #, "satellite:p33-HC-pfile13.pddl"
-             , "satellite:p34-HC-pfile14.pddl"
-             , "satellite:p35-HC-pfile15.pddl"
+             #, "satellite:p34-HC-pfile14.pddl"
+             #, "satellite:p35-HC-pfile15.pddl"
              , "satellite:p36-HC-pfile16.pddl"
              #, "miconic:s20-0.pddl"
              #, "airport:p22-airport4halfMUC-p3.pddl"
@@ -97,28 +97,28 @@ else:
 
 
 CONFIGS = [
-    (f"config_SEH_crossover_enabled", ["--search", "astar(operatorcounting([state_equation_constraints()],lp_solve_method=4,crossover=true))"]),
     (f"config_SEH_default", ["--search", "astar(operatorcounting([state_equation_constraints()]))"]),
+    (f"config_SEH_barrier", ["--search", "astar(operatorcounting([state_equation_constraints()],lp_solve_method=4))"]),
     
-    (f"config_DEL_crossover_enabled", ["--search", "astar(operatorcounting([delete_relaxation_constraints()],lp_solve_method=4,crossover=true))"]),
     (f"config_DEL_default", ["--search", "astar(operatorcounting([delete_relaxation_constraints()]))"]),
+    (f"config_DEL_barrier", ["--search", "astar(operatorcounting([delete_relaxation_constraints()],lp_solve_method=4))"]),
     
-    (f"config_OCP_crossover_enabled", ["--search", "astar(landmark_cost_partitioning(lm_rhw(),cost_partitioning=optimal,lp_solve_method=4,crossover=true))"]),
     (f"config_OCP_default", ["--search", "astar(landmark_cost_partitioning(lm_rhw(),cost_partitioning=optimal))"]),
+    (f"config_OCP_barrier", ["--search", "astar(landmark_cost_partitioning(lm_rhw(),cost_partitioning=optimal,lp_solve_method=4))"]),
     
-    (f"config_PHO_crossover_enabled", ["--search", "astar(operatorcounting([pho_constraints()],lp_solve_method=4,crossover=true))"]),
     (f"config_PHO_default", ["--search", "astar(operatorcounting([pho_constraints()]))"]),
+    (f"config_PHO_barrier", ["--search", "astar(operatorcounting([pho_constraints()],lp_solve_method=4))"]),
     
-    (f"config_IPOT_crossover_enabled", ["--search", "astar(initial_state_potential(lp_solve_method=4,crossover=true))"]),
     (f"config_IPOT_default", ["--search", "astar(initial_state_potential())"]),
+    (f"config_IPOT_barrier", ["--search", "astar(initial_state_potential(lp_solve_method=4))"]),
     
-    (f"config_DPOT_crossover_enabled", ["--search", "astar(diverse_potentials(lp_solve_method=4,crossover=true))"]),
     (f"config_DPOT_default", ["--search", "astar(diverse_potentials())"]),
+    (f"config_DPOT_barrier", ["--search", "astar(diverse_potentials(lp_solve_method=4))"]),
 ]
 
 BUILD_OPTIONS = []
 REV_NICKS = [
-    ("symmetrybreaking", "crossover_enabled_vs_default"),
+    ("symmetrybreaking", "barrier_vs_default"),
 ]
 ATTRIBUTES = ["error",
     "run_dir",
@@ -159,7 +159,8 @@ ATTRIBUTES = ["error",
     
     project.EVALUATIONS_PER_TIME,
     project.SPARSITY,
-    project.AVERAGE_ITERATIONS_AFTER_INITIAL_PER_INITIAL_ITERATIONS
+    project.AVERAGE_ITERATIONS_AFTER_INITIAL_PER_INITIAL_ITERATIONS,
+    project.INITIAL_ITERATIONS_PER_AVERAGE_ITERATIONS_AFTER_INITIAL,
 ]
 
 exp = project.FastDownwardExperiment(environment=ENV, revision_cache=REVISION_CACHE)
@@ -262,6 +263,7 @@ project.add_absolute_report(
     filter=[project.add_lp_count,
             project.add_average_iterations_after_initial,
             project.add_average_iterations_after_initial_per_initial_iterations,
+            project.add_initial_iterations_per_average_iterations_after_initial,
             project.add_variables_per_constraint,
             project.add_sparsity,
             project.add_evaluations_per_time]
@@ -322,8 +324,29 @@ for i in range(int(len(CONFIGS)/2)):
         filter=[project.add_lp_count,
                 project.add_average_iterations_after_initial,
                 project.add_average_iterations_after_initial_per_initial_iterations,
+                project.add_initial_iterations_per_average_iterations_after_initial,
                 project.add_variables_per_constraint],
-        name_postfix=f"comp-{algo1[7:-18]}"
+        name_postfix=f"{exp.name}-comp-{algo1[7:-8]}"
+    )
+
+    project.add_comparative_report(
+        exp,
+        algorithm_pairs=[(REV_NICKS[0][1] + ":" + algo1,
+                            REV_NICKS[0][1] + ":" + algo2)],
+        attributes=["coverage",
+                    project.TOTAL_TIME,
+                    project.AVERAGE_ITERATIONS_AFTER_INITIAL_PER_INITIAL_ITERATIONS,
+                    project.INITIAL_ITERATIONS_PER_AVERAGE_ITERATIONS_AFTER_INITIAL,
+                    "presolve_time",
+                    "lp_solve_time_sum",
+                    "error"],
+        format="tex",
+        filter=[project.add_lp_count,
+                project.add_average_iterations_after_initial,
+                project.add_average_iterations_after_initial_per_initial_iterations,
+                project.add_initial_iterations_per_average_iterations_after_initial,
+                project.add_variables_per_constraint],
+        name=f"{exp.name}-{algo1[7:-8]}-comp-to-default",
     )
 
 # # Plotting

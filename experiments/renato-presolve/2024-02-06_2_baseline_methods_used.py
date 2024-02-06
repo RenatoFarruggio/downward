@@ -114,6 +114,7 @@ ATTRIBUTES = [
     "number_of_method_6_used_after_initial",
     "number_of_other_methods_used_after_initial",
     project.AVERAGE_ITERATIONS_AFTER_INITIAL_PER_INITIAL_ITERATIONS,
+    project.INITIAL_ITERATIONS_PER_AVERAGE_ITERATIONS_AFTER_INITIAL,
 ]
 
 exp = project.FastDownwardExperiment(environment=ENV, revision_cache=REVISION_CACHE)
@@ -211,6 +212,7 @@ project.add_absolute_report(
     attributes=ATTRIBUTES,
     filter=[project.add_average_iterations_after_initial,
             project.add_average_iterations_after_initial_per_initial_iterations,
+            project.add_initial_iterations_per_average_iterations_after_initial,
             project.add_lp_count],
     #filter=[add_total_time_minus_search_time, project.add_evaluations_per_time], 
     #filter=[remove_short_running_lps, add_total_time_minus_search_time, project.add_evaluations_per_time], 
@@ -225,6 +227,7 @@ for algorithm in algorithms:
         attributes=ATTRIBUTES,
         filter=[project.add_average_iterations_after_initial,
                 project.add_average_iterations_after_initial_per_initial_iterations,
+                project.add_initial_iterations_per_average_iterations_after_initial,
                 project.add_lp_count],
         name=f"{exp.name}-{algorithm}-abs"
     )
