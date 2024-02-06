@@ -234,6 +234,18 @@ project.add_absolute_report(
     #filter=[project.add_evaluations_per_time]
 )
 
+project.add_absolute_report(
+    exp,
+    attributes=ATTRIBUTES,
+    filter_algorithm=algorithms,
+    filter=[project.add_lp_count,
+            project.add_average_iterations_after_initial,
+            project.add_average_iterations_after_initial_per_initial_iterations,
+            project.add_initial_iterations_per_average_iterations_after_initial],
+    name=f"{exp.name}-abs-tex",
+    format="tex"
+)
+
 
 for algorithm in algorithms:
     project.add_absolute_report(

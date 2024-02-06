@@ -254,24 +254,8 @@ project.add_absolute_report(
             project.add_sparsity,
             project.add_evaluations_per_time,
             project.add_presolve_time_per_lp_solve_time_sum,],
-),
+)
 
-project.add_absolute_report(
-    exp,
-    attributes=ATTRIBUTES,
-    #filter=[add_total_time_minus_search_time, project.add_evaluations_per_time], 
-    #filter=[remove_short_running_lps, add_total_time_minus_search_time, project.add_evaluations_per_time], 
-    filter=[project.add_lp_count,
-            project.add_average_iterations_after_initial,
-            project.add_average_iterations_after_initial_per_initial_iterations,
-            project.add_initial_iterations_per_average_iterations_after_initial,
-            project.add_variables_per_constraint,
-            project.add_sparsity,
-            project.add_evaluations_per_time,
-            project.add_presolve_time_per_lp_solve_time_sum,],
-    name=f"{exp.name}-abs-tex",
-    format="tex"
-),
 
 #for i in range(int(len(CONFIGS)/2)):
 #    algo1 = CONFIGS[2*i][0]
