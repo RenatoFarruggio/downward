@@ -73,10 +73,6 @@ TOTAL_TIME = Attribute(
     "total_time", min_wins=True, function=arithmetic_mean, digits=2
 )
 
-TOTAL_TIME_SUM = Attribute(
-    "total_time_sum", min_wins=True, function=arithmetic_mean, digits=2
-)
-
 AVERAGE_ITERATIONS_AFTER_INITIAL = Attribute(
     "average_iterations_after_initial",
     min_wins=True, function=arithmetic_mean, digits=2
