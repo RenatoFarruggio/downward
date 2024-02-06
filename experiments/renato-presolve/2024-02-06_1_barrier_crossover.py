@@ -326,9 +326,12 @@ for i in range(int(len(CONFIGS)/2)):
                 project.add_average_iterations_after_initial_per_initial_iterations,
                 project.add_initial_iterations_per_average_iterations_after_initial,
                 project.add_variables_per_constraint],
-        name_postfix=f"{exp.name}-comp-{algo1[7:-8]}"
+        name_postfix=f"comp-{algo1[7:-8]}"
     )
 
+for i in range(int(len(CONFIGS)/2)):
+    algo1 = CONFIGS[2*i][0]
+    algo2 = CONFIGS[2*i+1][0]
     project.add_comparative_report(
         exp,
         algorithm_pairs=[(REV_NICKS[0][1] + ":" + algo1,
@@ -346,7 +349,7 @@ for i in range(int(len(CONFIGS)/2)):
                 project.add_average_iterations_after_initial_per_initial_iterations,
                 project.add_initial_iterations_per_average_iterations_after_initial,
                 project.add_variables_per_constraint],
-        name=f"{exp.name}-{algo1[7:-8]}-comp-to-default",
+        name_postfix=f"{algo1[7:-8]}-comp-to-default",
     )
 
 # # Plotting
