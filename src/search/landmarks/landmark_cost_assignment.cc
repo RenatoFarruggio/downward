@@ -255,6 +255,7 @@ double LandmarkEfficientOptimalSharedCostAssignment::cost_sharing_h_value(
     static bool is_first = true;
     if (is_first) {
         lp_solver.solve_with_statistics();
+        is_first=false;
     } else {
         lp_solver.solve();
     }
