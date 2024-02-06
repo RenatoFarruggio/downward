@@ -80,12 +80,12 @@ AVERAGE_ITERATIONS_AFTER_INITIAL = Attribute(
 
 AVERAGE_ITERATIONS_AFTER_INITIAL_PER_INITIAL_ITERATIONS = Attribute(
     "average_iterations_after_initial_per_initial_iterations",
-    min_wins=True, function=arithmetic_mean, digits=2
+    min_wins=False, function=arithmetic_mean, digits=2
 )
 
 INITIAL_ITERATIONS_PER_AVERAGE_ITERATIONS_AFTER_INITIAL = Attribute(
     "initial_iterations_per_average_iterations_after_initial",
-    min_wins=False, function=arithmetic_mean, digits=2
+    min_wins=True, function=arithmetic_mean, digits=2
 )
 
 PRESOLVE_TIME_PER_LP_SOLVE_TIME_SUM = Attribute(
