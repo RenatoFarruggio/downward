@@ -154,10 +154,8 @@ ATTRIBUTES = ["error",
     "total_zero_iterations_count",
     "total_nonzero_iterations_count",
     "lp_count",
-    "average_iterations_after_initial",
     
     project.TOTAL_TIME,
-    project.TOTAL_TIME_SUM,
     project.EVALUATIONS_PER_TIME,
     project.SPARSITY,
     project.AVERAGE_ITERATIONS_AFTER_INITIAL,
@@ -271,7 +269,7 @@ project.add_absolute_report(
             project.add_sparsity,
             project.add_evaluations_per_time,
             project.add_presolve_time_per_lp_solve_time_sum,],
-    name=f"{exp.name}-abs",
+    name=f"{exp.name}-abs-tex",
     format="tex"
 ),
 
@@ -344,7 +342,6 @@ for i in range(int(len(CONFIGS)/2)):
                             REV_NICKS[0][1] + ":" + algo2)],
         attributes=["coverage",
                     project.TOTAL_TIME,
-                    project.TOTAL_TIME_SUM,
                     project.AVERAGE_ITERATIONS_AFTER_INITIAL,
                     project.AVERAGE_ITERATIONS_AFTER_INITIAL_PER_INITIAL_ITERATIONS,
                     project.INITIAL_ITERATIONS_PER_AVERAGE_ITERATIONS_AFTER_INITIAL,
