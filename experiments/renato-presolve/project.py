@@ -77,6 +77,11 @@ TOTAL_TIME_SUM = Attribute(
     "total_time_sum", min_wins=True, function=arithmetic_mean, digits=2
 )
 
+AVERAGE_ITERATIONS_AFTER_INITIAL = Attribute(
+    "average_iterations_after_initial",
+    min_wins=True, function=arithmetic_mean, digits=2
+)
+
 AVERAGE_ITERATIONS_AFTER_INITIAL_PER_INITIAL_ITERATIONS = Attribute(
     "average_iterations_after_initial_per_initial_iterations",
     min_wins=True, function=arithmetic_mean, digits=2
@@ -345,8 +350,6 @@ def add_average_iterations_after_initial_per_initial_iterations(run):
     initial_iterations_total = run.get("initial_iterations_total")
     if average_iterations_after_initial is not None and initial_iterations_total is not None and initial_iterations_total > 0:
         run["average_iterations_after_initial_per_initial_iterations"] = average_iterations_after_initial / initial_iterations_total
-    else:
-        run["average_iterations_after_initial_per_initial_iterations"] = None
     return run
 
 
