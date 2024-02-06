@@ -83,13 +83,26 @@ ATTRIBUTES = [
     
     "presolve_time",
     "presolve_ticks",
-    
-    "initial_lp_solve_ticks",
     #"search_time",
     #"lp_solve_time_sum",
     #"lps_detected",
     #"mips_detected",
     #project.EVALUATIONS_PER_TIME,
+    "initial_iterations_phase_1",
+    "initial_iterations_phase_2",
+    "initial_iterations_total",
+    "initial_iterations_barrier",
+    
+    "iterations_phase_1",
+    "iterations_phase_2",
+    "iterations_total",
+    "iterations_barrier",
+
+    "initial_lp_solve_ticks",
+    "phase_1_zero_iterations_count",
+    "phase_1_nonzero_iterations_count",
+    "total_zero_iterations_count",
+    "total_nonzero_iterations_count",
 
     #"lp_variables",
     #"lp_constraints",
@@ -113,6 +126,7 @@ ATTRIBUTES = [
     "number_of_method_5_used_after_initial",
     "number_of_method_6_used_after_initial",
     "number_of_other_methods_used_after_initial",
+    project.AVERAGE_ITERATIONS_AFTER_INITIAL,
     project.AVERAGE_ITERATIONS_AFTER_INITIAL_PER_INITIAL_ITERATIONS,
     project.INITIAL_ITERATIONS_PER_AVERAGE_ITERATIONS_AFTER_INITIAL,
 ]
@@ -210,10 +224,10 @@ algorithms = [REV_NICKS[0][1] + ":" + config[0] for config in CONFIGS]
 project.add_absolute_report(
     exp,
     attributes=ATTRIBUTES,
-    filter=[project.add_average_iterations_after_initial,
+    filter=[project.add_lp_count,
+            project.add_average_iterations_after_initial,
             project.add_average_iterations_after_initial_per_initial_iterations,
-            project.add_initial_iterations_per_average_iterations_after_initial,
-            project.add_lp_count],
+            project.add_initial_iterations_per_average_iterations_after_initial,],
     #filter=[add_total_time_minus_search_time, project.add_evaluations_per_time], 
     #filter=[remove_short_running_lps, add_total_time_minus_search_time, project.add_evaluations_per_time], 
     #filter=[project.add_evaluations_per_time]

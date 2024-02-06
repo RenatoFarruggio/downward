@@ -160,6 +160,7 @@ ATTRIBUTES = ["error",
     project.TOTAL_TIME_SUM,
     project.EVALUATIONS_PER_TIME,
     project.SPARSITY,
+    project.AVERAGE_ITERATIONS_AFTER_INITIAL,
     project.AVERAGE_ITERATIONS_AFTER_INITIAL_PER_INITIAL_ITERATIONS,
     project.INITIAL_ITERATIONS_PER_AVERAGE_ITERATIONS_AFTER_INITIAL,
     project.PRESOLVE_TIME_PER_LP_SOLVE_TIME_SUM,
@@ -257,6 +258,22 @@ project.add_absolute_report(
             project.add_presolve_time_per_lp_solve_time_sum,],
 ),
 
+project.add_absolute_report(
+    exp,
+    attributes=ATTRIBUTES,
+    #filter=[add_total_time_minus_search_time, project.add_evaluations_per_time], 
+    #filter=[remove_short_running_lps, add_total_time_minus_search_time, project.add_evaluations_per_time], 
+    filter=[project.add_lp_count,
+            project.add_average_iterations_after_initial,
+            project.add_average_iterations_after_initial_per_initial_iterations,
+            project.add_initial_iterations_per_average_iterations_after_initial,
+            project.add_variables_per_constraint,
+            project.add_sparsity,
+            project.add_evaluations_per_time,
+            project.add_presolve_time_per_lp_solve_time_sum,],
+    name=f"{exp.name}-abs",
+    format="tex"
+),
 
 #for i in range(int(len(CONFIGS)/2)):
 #    algo1 = CONFIGS[2*i][0]
@@ -328,6 +345,7 @@ for i in range(int(len(CONFIGS)/2)):
         attributes=["coverage",
                     project.TOTAL_TIME,
                     project.TOTAL_TIME_SUM,
+                    project.AVERAGE_ITERATIONS_AFTER_INITIAL,
                     project.AVERAGE_ITERATIONS_AFTER_INITIAL_PER_INITIAL_ITERATIONS,
                     project.INITIAL_ITERATIONS_PER_AVERAGE_ITERATIONS_AFTER_INITIAL,
                     "presolve_time",
