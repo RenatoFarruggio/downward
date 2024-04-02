@@ -46,6 +46,7 @@ public:
     virtual void save_presolved_problem_to_file(std::string filename) = 0;
     virtual void set_use_warm_starts(bool use_warm_starts) = 0;
     virtual void lp_solve_method(int lp_solve_method_id) = 0;
+    virtual void initial_lp_solve_method(int initial_lp_solve_method_id) = 0;
     virtual void set_solve_dual(int solve_dual) = 0;
     virtual void set_aggregator_application_limit(int aggregator_application_limit) = 0;
 

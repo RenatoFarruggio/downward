@@ -53,6 +53,7 @@ void LandmarkCostPartitioningHeuristic::set_cost_assignment(
                 task_properties::get_operator_costs(task_proxy),
                 *lm_graph, opts.get<lp::LPSolverType>("lpsolver"),
                 opts.get<int>("lp_solve_method"),
+                opts.get<int>("initial_lp_solve_method"),
                 opts.get<bool>("use_presolve"),
                 opts.get<bool>("crossover"),
                 opts.get<int>("folding_level"),
@@ -127,6 +128,10 @@ public:
         add_option<int>("lp_solve_method",
             "determine which method the LP solver should use to solve the "
             "LPs given when using standard CPLEX (not twophase).",
+            "0");
+        add_option<int>("initial_lp_solve_method",
+            "determine which method the LP solver should use to solve the "
+            "initial LP when using CPLEX",
             "0");
         add_option<bool>(
             "use_presolve",

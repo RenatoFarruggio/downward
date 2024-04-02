@@ -142,7 +142,8 @@ double LandmarkUniformSharedCostAssignment::cost_sharing_h_value(
 LandmarkEfficientOptimalSharedCostAssignment::LandmarkEfficientOptimalSharedCostAssignment(
     const vector<int> &operator_costs, const LandmarkGraph &graph,
     lp::LPSolverType solver_type, 
-        int lp_solve_method_id, 
+        int lp_solve_method_id,
+        int initial_lp_solve_method_id,
         bool use_presolve,
         bool use_crossover, 
         int folding_level, 
@@ -152,6 +153,7 @@ LandmarkEfficientOptimalSharedCostAssignment::LandmarkEfficientOptimalSharedCost
       lp_solver(solver_type),
       lp(build_initial_lp()) {
         lp_solver.lp_solve_method(lp_solve_method_id);
+        lp_solver.initial_lp_solve_method(initial_lp_solve_method_id);
         lp_solver.set_use_presolve(use_presolve);
         lp_solver.set_crossover(use_crossover);
         lp_solver.set_folding_level(folding_level);

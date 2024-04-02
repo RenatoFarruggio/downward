@@ -24,6 +24,7 @@ OperatorCountingHeuristic::OperatorCountingHeuristic(const plugins::Options &opt
       save_presolved_lp(opts.get<bool>("save_presolved_lp")),
       use_warm_starts(opts.get<bool>("use_warm_starts")),
       lp_solve_method_id(opts.get<int>("lp_solve_method")),
+      initial_lp_solve_method_id(opts.get<int>("initial_lp_solve_method")),
       solve_dual(opts.get<int>("solve_dual")),
       aggregator_application_limit(opts.get<int>("aggregator_application_limit")),
       is_first(true) {
@@ -45,6 +46,7 @@ OperatorCountingHeuristic::OperatorCountingHeuristic(const plugins::Options &opt
     lp_solver.set_save_presolved_lp(save_presolved_lp);
     lp_solver.set_use_warm_starts(use_warm_starts);
     lp_solver.lp_solve_method(lp_solve_method_id);
+    lp_solver.initial_lp_solve_method(initial_lp_solve_method_id);
     lp_solver.set_solve_dual(solve_dual);
     lp_solver.set_aggregator_application_limit(aggregator_application_limit);
 
@@ -178,6 +180,13 @@ public:
             "lp_solve_method",
             "determine which method the LP solver should use to solve the "
             "LPs given when using standard CPLEX (not twophase).",
+            "0"
+        );
+
+        add_option<int>(
+            "initial_lp_solve_method",
+            "determine which method the LP solver should use to solve the "
+            "initial LP given when using CPLEX.",
             "0"
         );
 

@@ -76,6 +76,13 @@ void prepare_parser_for_admissible_potentials(plugins::Feature &feature) {
         "0"
     );
 
+    feature.add_option<int>(
+        "initial_lp_solve_method",
+        "determine which method the LP solver should use to solve the "
+        "initial LP when using CPLEX.",
+        "0"
+    );
+
     feature.add_option<bool>(
         "use_presolve",
         "turn presolving on or off. Using presolve creates an overhead "

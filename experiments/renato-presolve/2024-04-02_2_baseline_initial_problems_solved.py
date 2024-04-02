@@ -74,7 +74,6 @@ ATTRIBUTES = [
     #"lps_detected",
     #"mips_detected",
     #project.EVALUATIONS_PER_TIME,
-
     "presolve_time",
     "presolve_ticks",
     "initial_lp_solve_ticks",

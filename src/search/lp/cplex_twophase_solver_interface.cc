@@ -844,6 +844,10 @@ void CplexTwoPhaseSolverInterface::lp_solve_method(int lp_solve_method_id) {
     cout << "WARNING: lp_solve_method (set to " << lp_solve_method_id << ") is an invalid option for CPLEX Twophase!" << endl;
 }
 
+void CplexTwoPhaseSolverInterface::initial_lp_solve_method(int lp_solve_method_id) {
+    cout << "WARNING: initial_lp_solve_method (set to " << lp_solve_method_id << ") is an invalid option for CPLEX Twophase!" << endl;
+}
+
 void CplexTwoPhaseSolverInterface::set_solve_dual(int solve_dual) {
     cout << "WARNING: solve_dual (set to " << solve_dual << ") is an invalid option for CPLEX Twophase!" << endl;
     exit(1);

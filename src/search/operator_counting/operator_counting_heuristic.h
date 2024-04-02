@@ -26,6 +26,7 @@ class OperatorCountingHeuristic : public Heuristic {
     const int save_presolved_lp;
     const bool use_warm_starts;
     const int lp_solve_method_id;
+    const int initial_lp_solve_method_id;
     const int solve_dual;
     const int aggregator_application_limit;
     bool is_first;

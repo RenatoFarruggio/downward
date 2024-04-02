@@ -133,6 +133,7 @@ public:
     void save_presolved_problem_to_file(const std::string filename);
     void set_use_warm_starts(const bool use_warm_starts);
     void lp_solve_method(const int lp_solve_method_id);
+    void initial_lp_solve_method(const int initial_lp_solve_method_id);
     void set_solve_dual(const int solve_dual);
     void set_aggregator_application_limit(const int aggregator_application_limit);
 

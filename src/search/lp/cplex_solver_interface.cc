@@ -255,6 +255,7 @@ CplexSolverInterface::CplexSolverInterface()
       method_6_used_counter(0),
       unknown_method_used_counter(0),
       cpx_lp_solve_method(CPXlpopt),
+      cpx_lp_solve_method_initial(CPXlpopt),
       num_unsatisfiable_constraints(0),
       num_unsatisfiable_temp_constraints(0) {
     int status = 0;
@@ -492,7 +493,7 @@ void CplexSolverInterface::solve() {
     } else {
         if (init_phase) {
             CPX_CALL(CPXgetdettime, env, &start_time);
-            CPX_CALL(CPXlpopt, env, problem);
+            CPX_CALL(cpx_lp_solve_method_initial, env, problem);
             CPX_CALL(CPXgetdettime, env, &end_time);
 
             int iterations_phase_1 = CPXgetphase1cnt(env, problem);
@@ -822,6 +823,37 @@ void CplexSolverInterface::set_use_warm_starts(bool use_warm_starts) {
     } else {
         cout << "Using warm starts is turned off" << endl;
     }
+}
+
+
+
+void CplexSolverInterface::initial_lp_solve_method(int method_id) {
+    // These ids are consistent (but not including network simplex and concurrent) with the CPLEX ids at:
+    //  https://www.ibm.com/docs/en/icos/22.1.1?topic=parameters-algorithm-continuous-linear-problems
+
+
+    cout << "Preferred method for solving initial LP: ";
+    if (method_id == 0) {
+        cpx_lp_solve_method_initial = CPXlpopt;
+        cout << "None: Let CPLEX choose";
+    } else if (method_id == 1) {
+        cpx_lp_solve_method_initial = CPXprimopt;
+        cout << "Primal simplex";
+    } else if (method_id == 2) {
+        cpx_lp_solve_method_initial = CPXdualopt;
+        cout << "Dual simplex";
+    } else if (method_id == 4) {
+        cpx_lp_solve_method_initial = CPXbaropt;
+        cout << "Barrier optimizer";
+    } else if (method_id == 5) {
+        cpx_lp_solve_method_initial = CPXsiftopt;
+        cout << "Sifting";
+    } else {
+        cout << "WARNING: Admissible ids for initial_lp_solve_method are 0 (auto), 1 (primal simplex), 2 (dual simplex), 4 (barrier), 5 (sifting)." << endl;
+        cerr << "Unknown method name (" << method_id << ") provided for solving LPs!" << endl;
+        exit(-1);
+    }
+    cout << endl;
 }
 
 void CplexSolverInterface::lp_solve_method(int method_id) {
