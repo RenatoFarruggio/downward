@@ -487,6 +487,8 @@ void CplexSolverInterface::solve() {
         return;
     } else if (is_mip) {
         CPX_CALL(CPXmipopt, env, problem);
+        //int method_used = CPXgetmethod(env, problem);
+        //utils::g_log << "Method used for initial step: " << method_used << endl;
     } else {
         if (init_phase) {
             CPX_CALL(CPXgetdettime, env, &start_time);
